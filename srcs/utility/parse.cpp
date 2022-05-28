@@ -25,7 +25,7 @@ std::vector<std::string>    split(std::string &str){
     return result;
 }
 
-std::pair<int, std::vector<int>>    getBoard(char *filename) {
+std::pair<int, std::vector<int>>    getPuzzle(char *filename) {
     std::string                 line;
     std::vector<std::string>    args;
     std::vector<int>            board;

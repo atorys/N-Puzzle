@@ -9,5 +9,6 @@
 #include <vector>
 
 std::vector<std::string>            split(std::string &str);
-std::pair<int, std::vector<int>>    getBoard(char *filename);
+std::pair<int, std::vector<int>>    getPuzzle(char *filename);
+std::vector<int>					snailSolution(int size);
 void                                print_string(int line, int width, int coeff);
