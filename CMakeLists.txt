@@ -3,9 +3,9 @@ project(n-puzzle)
 set(CMAKE_CXX_STANDARD 14)
 
 # Add main.cpp file of project root directory as source file
-set(SOURCE_FILES srcs/main.cpp
-        srcs/Board.cpp
-        srcs/Board.hpp
+set(SOURCE_FILES srcs/app/main.cpp
+        srcs/models/Board.cpp
+        srcs/models/Board.hpp
         srcs/utility/utility.hpp
         srcs/utility/print.cpp
         srcs/utility/parse.cpp)
