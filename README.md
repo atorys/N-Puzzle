@@ -1,5 +1,5 @@
 #  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте)  N-Puzzle  
- Implementation of A* search algorithm to solve N-puzzle  
+ Implementation of A* search algorithm to solve N-puzzle for learning about graph-based search algorithms
  ([_пятнашки_](https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0_%D0%B2_15),
  [_15-Puzzle_](https://en.wikipedia.org/w/index.php?title=15_puzzle&oldid=1086625326), taquin)  
 
@@ -17,7 +17,7 @@
   которая преобразует поле головоломки в конечный вид "snail solution";
 - за один ход можно менять местами пустой блок с соседними ячейками;
 
-```cpp
+```
     3-PUZZLE :  
    ───────────                                                              'SNAIL SOLUTION'
                                                                                 ⤴   
@@ -35,13 +35,17 @@
 
 ## Задачи :
  
-1. <details> <summary> Проверить, что головоломка имеет решение.   
-   Существуют такие начальные поля, из которых невозможно получить нужное решение, играя по правилам. </summary>  
- 
- 
+1. <details> 
+    <summary> Проверить, что головоломка имеет решение.   
+    Существуют такие начальные поля, из которых невозможно получить нужное решение, играя по правилам. 
+    </summary>  
+
     Поле пазла можно представить в виде множества чисел `3, 5, 6, 7, 2, 4, 1, 8`, каждое перемещение пустой ячейки в пазле 
     образует новую перестановку из этих же чисел, существование решения головоломки будет зависеть от количества **инверсий** 
     в начальной и конечной перестановке пазла.  
+    
+    [больше про перестановки](https://www.mccme.ru/shen/permutations.pdf)
+    
      ``` 
            ┌───┬───┬───┐       ┌───┬───┐ ┌───┬───┬───┐          ┌───┬───┬───┬───┬───┬───┬───┬───┐
            │ 3 │ 5 │   │  ──≻  │ 3 │ 5 │ │ 6 │ 7 │ 2 │    ──≻   │ 3 │ 5 │ 6 │ 7 │ 2 │ 4 │ 1 │ 8 │
@@ -51,11 +55,11 @@
            │ 4 │ 1 │ 8 │ 
            └───┴───┴───┘ 
      ```
-
+    
     > **Инверсия**: пара чисел **(a,b)** называется инверсией перестановки, если нарушен естественный порядок элементов, 
     где **a** находится левее, чем **b**, при этом **a > b**. В перестановке (1, 2, 4, 5, 3) ровно одна инверсия элементов (4, 3)
  
-   ### Решение есть если:
+   ### Решение есть если:   
    - N - **нечетное** и количество инверсий в начальном и конечном состоянии имеет **одинаковую** четность;
    - N - **четное**, тогда сумма количества инверсий с номером строки, в которой находится пустая ячейка, должна иметь
    ту же четность, что и сумма количества инверсий в конечном состоянии с новым номером строки пустой ячейки;
@@ -73,13 +77,13 @@
        │ 1 │ 2 │ 3 │ 8 │ 4 │ 7 │ 6 │ 5 │   (8,4) (8,7) (8,6) (8,5) (7,6) (7,5) (6,5)
        └───┴───┴───┴───┴───┴───┴───┴───┘   
      ```
-    <div align="right"><img src="https://media.giphy.com/media/xT5LMINTLCSOGdIyEo/giphy.gif" width="300" align="right"></div>
- </details>
+   <div align="right"><img src="https://media.giphy.com/media/xT5LMINTLCSOGdIyEo/giphy.gif" width="300" align="right"></div>
+   </details>
 
-2. <details> <summary> </summary>
+3. <details> <summary> </summary>
    </details>
    
-3. <details> <summary>  </summary>
+4. <details> <summary>  </summary>
    </details>
 
 ## About
@@ -90,9 +94,8 @@
 - every cell contains unique number from 1 to N^2 - 1 in random order
   and one cell is empty;  
 - algorithm has to find a valid sequence of moves to reach the final state, a.k.a the "snail solution";
-- only move one can do in the N-puzzle is to swap the empty cell with one of its
-  neighbors
-```cpp
+- only tiles adjacent to the empty space may be moved into that space.
+```
     3-PUZZLE :  
    ───────────                                                     'SNAIL SOLUTION'
                                                                         ⤴   

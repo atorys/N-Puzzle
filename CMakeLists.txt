@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCE_FILES srcs/app/main.cpp
         srcs/models/Puzzle.cpp
         srcs/models/Puzzle.hpp
-        srcs/models/Game.hpp
-        srcs/models/Game.cpp
+        srcs/algorithm/AStar.cpp
+        srcs/algorithm/AStar.hpp
+        srcs/algorithm/Strategy.hpp
         srcs/utility/utility.hpp
         srcs/utility/print.cpp
         srcs/utility/solve.cpp

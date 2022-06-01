@@ -31,3 +31,15 @@ std::vector<int>	snailSolution(int size) {
 	}
 	return solution;
 }
+
+int     count_inversions(std::vector<int> const& sequence) {
+    int count = 0;
+
+    for (int i = 0; i < sequence.size(); ++i) {
+        for (int j = i + 1; j < sequence.size(); ++j) {
+            if (sequence[i] && sequence[j] && sequence[i] > sequence[j])
+                count++;
+        }
+    }
+    return count;
+}
