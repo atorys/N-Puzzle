@@ -2,12 +2,12 @@
 // Created by Achiote Tory on 5/27/22.
 //
 
-#include "../algorithm/AStar.hpp"
-#include "../algorithm/Strategy.hpp"
+#include "../algorithm/SearchAlgorithm.hpp"
+#include "../algorithm/Heuristics.hpp"
 
 int main(int ac, char **av) {
 
-    AStar   algorithm(&myDistance);
+	SearchAlgorithm	*algo = new AStar();
     Puzzle  *puzzle;
 
     if (ac > 1) {
@@ -20,20 +20,25 @@ int main(int ac, char **av) {
         puzzle = new Puzzle(args.first, args.second);
 
     } else {
-        std::vector<int> state = {1, 2, 3, 8, 0, 4, 7, 6, 5};
-        puzzle = new Puzzle(3, state);
+        std::vector<int> sequence = {1, 2, 3, 8, 0, 4, 7, 6, 5};
+        puzzle = new Puzzle(3, sequence);
     }
 
     puzzle->print();
     unsigned int start = clock();
-    algorithm.solve(puzzle);
-    std::cout << "time = " << (double)(clock() - start) / 10000 << "ms\n";
 
-    algorithm.set_strategy(&hammingDistance);
-    start = clock();
-    algorithm.solve(puzzle);
-    std::cout << "time = " << (double)(clock() - start) / 10000 << "ms\n";
+//	((AStar*)algo)->select_heuristics(&hammingDistance);
+//    start = clock();
+//    algo->solve(puzzle);
+//    std::cout << "time = " << (double)(clock() - start) / 1000000 << "s\n";
+
+	delete algo;
+	algo = new DepthFirstSearch();
+	start = clock();
+	algo->solve(puzzle);
+	std::cout << "time = " << (double)(clock() - start) / 1000000 << "s\n";
 
     delete puzzle;
+	delete algo;
     return 0;
 }

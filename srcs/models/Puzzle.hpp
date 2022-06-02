@@ -6,48 +6,34 @@
 #include "vector"
 #include "../utility/utility.hpp"
 
-enum moves {
-    no = 0,
-    up,
-    right,
-    down,
-    left
+enum Move {
+	up,
+	right,
+	down,
+	left,
+	none
 };
 
 class Puzzle {
 
 	int                     size;
-	std::vector<int>        state;
-    std::pair<int, int>     zero_node;
-    int                     last_move;
-
-    int                     cost;
-    int                     heuristic;
-
-    Puzzle*                 parent;
+	std::vector<int>        sequence;
+    std::pair<int, int>     space;
+	std::vector<Move>		moves;
 
 public:
+	Puzzle(){};
     Puzzle(int, std::vector<int> const&);
-    Puzzle(Puzzle const& other, int);
+    Puzzle(Puzzle const& other);
+	Puzzle&	operator=(Puzzle const& other);
 
-	const std::vector<int>&		get_state() const;
+	const std::vector<int>&		get_sequence() const;
 	int							getSize() const;
 	int							get_cost() const;
-    int                         get_heuristics() const;
-    Puzzle*					    get_parent() const;
-    void                        set_heuristics(int);
+	std::pair<int, int> const&	get_space() const;
+	std::vector<Move>		    get_moves() const;
 
+	bool 	try_move(Move);
     void    print() const;
     void    print(std::vector<int>) const;
-
-    friend bool operator>(Puzzle const& a, Puzzle const& b) {
-        return (a.cost + a.heuristic) > (b.cost + b.heuristic);
-    }
-
-    friend bool operator<(Puzzle const& a, Puzzle const& b) {
-        return !(a > b);
-    }
-
 };
-
-

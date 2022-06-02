@@ -32,6 +32,16 @@ std::vector<int>	snailSolution(int size) {
 	return solution;
 }
 
+std::map<int, int>	get_goal_map(std::vector<int> const& puzzle) {
+	std::map<int, int>  goal_state;
+
+	for (int i = 0; i < puzzle.size(); ++i) {
+		goal_state[puzzle[i]] = i;
+	}
+
+	return goal_state;
+}
+
 int     count_inversions(std::vector<int> const& sequence) {
     int count = 0;
 

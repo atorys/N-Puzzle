@@ -3,12 +3,13 @@ project(n-puzzle)
 set(CMAKE_CXX_STANDARD 14)
 
 # Add main.cpp file of project root directory as source file
-set(SOURCE_FILES srcs/app/main.cpp
+set(SOURCE_FILES
+#        srcs/app/main.cpp
+        graphics/main.cpp
         srcs/models/Puzzle.cpp
         srcs/models/Puzzle.hpp
-        srcs/algorithm/AStar.cpp
-        srcs/algorithm/AStar.hpp
-        srcs/algorithm/Strategy.hpp
+        srcs/algorithm/SearchAlgorithm.hpp
+        srcs/algorithm/Heuristics.hpp
         srcs/utility/utility.hpp
         srcs/utility/print.cpp
         srcs/utility/solve.cpp
