@@ -107,3 +107,8 @@ Solvable cases:
 
 
 https://dreamgryphon.itch.io/pixel-art-templates
+https://paweljarosz.itch.io/puzzle-platformer-asset-mnimalistic-game-kit-portal-like
+https://cazwolf.itch.io/caz-pixel-keyboard
+https://just-a-cookie.itch.io/pixel-icon-pack
+
+https://arcade.itch.io/awkward

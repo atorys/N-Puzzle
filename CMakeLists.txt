@@ -24,6 +24,7 @@ set(SOURCE_FILES
 
 set(SOURCE_FILES_GAME
         srcs/graphics/main.cpp
+        srcs/graphics/Game.hpp
         srcs/models/Puzzle.cpp
         srcs/models/Puzzle.hpp
         srcs/algorithm/SearchAlgorithm.hpp

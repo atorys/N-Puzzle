@@ -4,16 +4,39 @@
 
 #include<stdio.h>
 #include<math.h>
-#include "SFML/Graphics.hpp"
-#include "SFML/System.hpp"
-#include "SFML/Window.hpp"
+#include "../algorithm/SearchAlgorithm.hpp"
+#include "../algorithm/Heuristics.hpp"
+
+#include "Game.hpp"
+
 
 int main(int ac, char **av) {
 
-	sf::RenderWindow	window(sf::VideoMode({300, 300}), "N-Puzzle");
-	window.clear();
+	Game n_puzzle;
 
-	while (window.isOpen()) {
+	Puzzle* puzzle;
 
+	std::pair<int, std::vector<int>> args;
+	if ((args = getPuzzle(av[1])).second.empty()) {
+		std::cerr << "Wrong file\n";
+		exit(EXIT_FAILURE);
 	}
+
+	puzzle = new Puzzle(args.first, args.second);
+
+	n_puzzle.set_puzzle(puzzle);
+	n_puzzle.start();
+
+
+
+//	s_arrow.setTexture(icons);
+//	s_arrow.setTextureRect(sf::IntRect(1*16, 4*16, 16, 16));
+//
+//
+//	s_arrow.setPosition(100, 100);
+//	t_start.setPosition(120, 100);
+//	s_dice.setPosition(20, 20);
+
+
+
 }
