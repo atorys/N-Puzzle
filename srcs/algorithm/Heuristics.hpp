@@ -12,11 +12,11 @@ int manhattanDistance(std::vector<int> sequence) {
     return 0;
 }
 
-float hammingDistance(Puzzle* puzzle, std::map<int, int> goal) {
+float euclideanDistance(Puzzle* puzzle, std::map<int, int> goal) {
     float distance = 0;
     for (int i = 0; i < puzzle->get_sequence().size(); ++i) {
-        distance += (float)sqrt(((i / puzzle->getSize() - goal[puzzle->get_sequence()[i]] / puzzle->getSize()) * (i / puzzle->getSize() - goal[puzzle->get_sequence()[i]] / puzzle->getSize())) +
-                         ((i % puzzle->getSize() - goal[puzzle->get_sequence()[i]] % puzzle->getSize()) * (i % puzzle->getSize() - goal[puzzle->get_sequence()[i]] % puzzle->getSize())));
+        distance += (float)sqrt(((i / puzzle->get_size() - goal[puzzle->get_sequence()[i]] / puzzle->get_size()) * (i / puzzle->get_size() - goal[puzzle->get_sequence()[i]] / puzzle->get_size())) +
+                         ((i % puzzle->get_size() - goal[puzzle->get_sequence()[i]] % puzzle->get_size()) * (i % puzzle->get_size() - goal[puzzle->get_sequence()[i]] % puzzle->get_size())));
     }
     return distance;
 }
@@ -24,7 +24,7 @@ float hammingDistance(Puzzle* puzzle, std::map<int, int> goal) {
 float chebDistance(Puzzle* puzzle, std::map<int, int> goal) {
     float distance = 0;
     for (int i = 0; i < puzzle->get_sequence().size(); ++i) {
-		distance += std::max(std::abs((i/ puzzle->getSize() - goal[puzzle->get_sequence()[i]]/ puzzle->getSize())), std::abs(i % puzzle->getSize() - goal[puzzle->get_sequence()[i]] % puzzle->getSize()));
+		distance += std::max(std::abs((i/ puzzle->get_size() - goal[puzzle->get_sequence()[i]]/ puzzle->get_size())), std::abs(i % puzzle->get_size() - goal[puzzle->get_sequence()[i]] % puzzle->get_size()));
     }
     return distance;
 }

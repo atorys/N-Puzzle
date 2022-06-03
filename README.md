@@ -106,3 +106,4 @@ Solvable cases:
 - in other cases puzzle is not solvable
 
 
+https://dreamgryphon.itch.io/pixel-art-templates
