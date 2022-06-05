@@ -5,6 +5,7 @@
 #include <iomanip>
 #include "../algorithm/SearchAlgorithm.hpp"
 #include "../algorithm/Heuristics.hpp"
+#include "../graphics/Visualizer.hpp"
 
 int main(int ac, char **av) {
 
@@ -44,9 +45,13 @@ int main(int ac, char **av) {
 		if (!solvable) {
 			std::cout << "unsolvable ;(\n";
 		} else {
-			std::cout << "time = " << (double) (clock() - start) / 1000000 << "s\t";
+			double time = (double) (clock() - start) / 1000000;
+			std::cout << "time = " << time << "s\t";
 			std::cout << "moves = " << move.size() << "\t";
 			std::cout << "total states = " << count << "\n";
+
+			Visualizer visualizer;
+			visualizer.visualize(puzzle, SearchAlgorithm::Solution{solvable, move, count}, time);
 		}
 
 

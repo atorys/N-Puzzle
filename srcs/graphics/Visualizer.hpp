@@ -19,6 +19,11 @@ const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/graphics/resources
 
 float SCALE = 4;
 
+enum States {
+	PAUSE,
+	GO
+};
+
 class Visualizer {
 
 	sf::RenderWindow	window;
@@ -39,63 +44,47 @@ class Visualizer {
 		texture.loadFromFile(BOXES);
 	}
 
-	void	visualize(Puzzle* start_puzzle, SearchAlgorithm::Solution const& solution) {
-		sf::Event event;
+	void	visualize(Puzzle* start_puzzle, SearchAlgorithm::Solution const& solution, double time) {
+		sf::Event	event;
+		States		state = PAUSE;
 
-		set_puzzle(start_puzzle, solution);
-		draw_puzzle();
-
-//		std::vector<Move> moves = std::get<1>(solution);
-//		for (Move m : moves) {
-//			move(LEFT);
-//		}
+		set_puzzle(start_puzzle, solution, time);
+		std::vector<Move> moves = std::get<1>(solution);
+		int steps = moves.size();
 
 		while (window.isOpen()) {
-//			window.clear(sf::Color::Black);
-			std::vector<Move> moves = {UP, RIGHT, DOWN, LEFT};
-			for (Move m : moves) {
-				move(m);
-			}
-
 			while (window.pollEvent(event)) {
 				if (event.type == sf::Event::Closed) {
 					window.close();
 				}
-//				if (event.type == sf::Event::MouseButtonPressed) {
-//					if (current_puzzle) {
-//						int percentage = current_puzzle->get_size() * (SCALE * TILE_SIZE) / (HEIGHT / 100);
-//						while (percentage <= 60 || percentage >= 80) {
-//							SCALE *= percentage < 60 ? 1.25 : 0.75;
-//							percentage = current_puzzle->get_size() * (SCALE * TILE_SIZE) / (HEIGHT / 100);
-//						}
-//					}
-//					sf::Vector2i pos = sf::Mouse::getPosition(window);
-//					int x = (pos.x - get_x(0, current_puzzle->get_size()))/(SCALE * TILE_SIZE);
-//					int y = (pos.y - get_y(0, current_puzzle->get_size()))/(SCALE * TILE_SIZE);
-//
-//					Move move = NONE;
-//					if (current_puzzle->get_space().first == y && current_puzzle->get_space().second == x + 1)
-//						move = Move::LEFT;
-//					else if (current_puzzle->get_space().first == y && current_puzzle->get_space().second == x - 1)
-//						move = Move::RIGHT;
-//					else if (current_puzzle->get_space().second == x && current_puzzle->get_space().first == y + 1)
-//						move = Move::UP;
-//					else if (current_puzzle->get_space().second == x && current_puzzle->get_space().first == y - 1)
-//						move = Move::DOWN;
-//					current_puzzle->try_move(move);
-////					float speed = 3;
-////					sf::Sprite	current = sprites["empty_box"];
-////					for (int i = 0; i < SCALE*TILE_SIZE; i += speed) {
-////						current.move(speed*	)
-//					}
-//				}
+				if (event.type == sf::Event::MouseButtonPressed) {
+					if (state == GO)
+						state = PAUSE;
+					else if (state == PAUSE) {
+						state = GO;
+						if (steps == 0) {
+							set_puzzle(start_puzzle, solution, time);
+							steps = moves.size();
+						}
+					}
+				}
 			}
+
+			if (state == GO) {
+				if (steps > 0)
+					move(moves[moves.size() - steps], steps);
+				else
+					draw_puzzle(0);
+			}
+			else
+				draw_puzzle(steps > 0 ? steps : moves.size());
 			window.display();
+			window.clear(sf::Color::Black);
 		}
 	}
 
   private:
-	void	set_puzzle(Puzzle *puzzle, SearchAlgorithm::Solution const& solution) {
+	void	set_puzzle(Puzzle *puzzle, SearchAlgorithm::Solution const& solution, double time) {
 
 		size = puzzle->get_size();
 
@@ -110,9 +99,10 @@ class Visualizer {
 		set_numbers(puzzle);
 
 		texts.clear();
-		texts.emplace_back(std::string("# TIME = ") + "0" + ".S ", font, 25);
-		texts.emplace_back("# STEPS = " + std::to_string(std::get<1>(solution).size()) , font, 25);
-		texts.emplace_back("# STATES = " + std::to_string(std::get<2>(solution)), font, 25);
+		texts.emplace_back("# ", font, 35);
+		texts.emplace_back(std::string("TIME = ") + std::to_string(time) + " S", font, 25);
+		texts.emplace_back("STEPS = " + std::to_string(std::get<1>(solution).size()) , font, 25);
+		texts.emplace_back("STATES = " + std::to_string(std::get<2>(solution)), font, 25);
 		for (auto & text : texts) {
 			text.setFillColor(sf::Color::White);
 //			texts[i].setStyle(sf::Text::);
@@ -167,28 +157,32 @@ class Visualizer {
 		set_positions(numbers, TILE_SIZE*SCALE / 4.5);
 	}
 
-	void 	draw_puzzle() {
+	void 	draw_puzzle(int step) {
 		for (int i = 0; i < sprites.size(); ++i) {
 			window.draw(sprites[i]);
 			window.draw(numbers[i]);
 		}
 
-		float padding_y = sprites.back().getPosition().y + TILE_SIZE*SCALE + 20;
-		float padding_x = sprites.front().getPosition().x;
+//		float padding_y = sprites.back().getPosition().y + TILE_SIZE*SCALE + 15;
+//		float padding_x = sprites.begin()->getPosition().x;
+		float padding_y = get_y(HEIGHT / 2);
+		float padding_x = get_x(0);
+
+		texts[0].setString("# " + std::to_string(step));
 		for (int i = 0; i < texts.size(); ++i) {
 			texts[i].setPosition(padding_x, padding_y);
-			padding_y += 20;
+			padding_y += 15 + !i * 25;
 			window.draw(texts[i]);
 		}
 	}
 
-	void move(Move dir) {
+	void move(Move dir, int& step) {
 		int dx = 0;
 		int dy = 0;
-		float speed = 8;
+		float speed = 10;
 
-		if (dir == Move::UP) { dx = 0; dy = -1; std::cout << "UP\n"; };
-		if (dir == Move::DOWN) { dx = 0; dy = 1; std::cout << "DOWN\n";};
+		if (dir == Move::UP) { dx = 0; dy = -1;};
+		if (dir == Move::DOWN) { dx = 0; dy = 1;};
 		if (dir == Move::RIGHT) { dx = 1; dy = 0; };
 		if (dir == Move::LEFT) { dx = -1; dy = 0; };
 
@@ -200,12 +194,13 @@ class Visualizer {
 		sprites[empty_sprite.first * size + empty_sprite.second].setPosition(pos_3);
 		numbers[empty_sprite.first * size + empty_sprite.second].setPosition(pos_4);
 
+		--step;
 		for (float i = 0; i < TILE_SIZE*SCALE;) {
 			sprites[(empty_sprite.first + dy) * size + empty_sprite.second + dx].move(-1 * dx * speed, -1 * dy * speed);
 			numbers[(empty_sprite.first + dy) * size + empty_sprite.second + dx].move(-1 * dx * speed, -1 * dy * speed);
 
 			window.clear(sf::Color::Black);
-			draw_puzzle();
+			draw_puzzle(step);
 			window.display();
 			i += speed;
 		}
@@ -220,7 +215,7 @@ class Visualizer {
 		empty_sprite.second += dx;
 
 		window.clear(sf::Color::Black);
-		draw_puzzle();
+		draw_puzzle(step);
 		window.display();
 	}
 

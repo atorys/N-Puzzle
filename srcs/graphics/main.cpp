@@ -24,7 +24,7 @@ int main(int ac, char **av) {
 
 	puzzle = new Puzzle(args.first, args.second);
 
-	n_puzzle.visualize(puzzle, SearchAlgorithm::Solution{true, std::vector<Move>{DOWN	}, 10});
+	n_puzzle.visualize(puzzle, SearchAlgorithm::Solution{true, std::vector<Move>{DOWN, DOWN, DOWN, RIGHT, RIGHT, UP, UP, UP}, 1});
 
 
 

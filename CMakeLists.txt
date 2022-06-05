@@ -52,3 +52,8 @@ target_compile_features(n-puzzle-game PUBLIC cxx_std_17)
 target_compile_definitions(n-puzzle-game PRIVATE SFML_STATIC)
 
 target_link_libraries(n-puzzle-game ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+
+target_compile_features(n-puzzle PUBLIC cxx_std_17)
+target_compile_definitions(n-puzzle PRIVATE SFML_STATIC)
+
+target_link_libraries(n-puzzle ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
