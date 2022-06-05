@@ -7,12 +7,12 @@
 #include "../algorithm/SearchAlgorithm.hpp"
 #include "../algorithm/Heuristics.hpp"
 
-#include "Game.hpp"
+#include "Visualizer.hpp"
 
 
 int main(int ac, char **av) {
 
-	Game n_puzzle;
+	Visualizer n_puzzle;
 
 	Puzzle* puzzle;
 
@@ -24,8 +24,7 @@ int main(int ac, char **av) {
 
 	puzzle = new Puzzle(args.first, args.second);
 
-	n_puzzle.set_puzzle(puzzle);
-	n_puzzle.start();
+	n_puzzle.visualize(puzzle, SearchAlgorithm::Solution{true, std::vector<Move>{DOWN	}, 10});
 
 
 
