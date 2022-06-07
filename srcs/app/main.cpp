@@ -14,7 +14,7 @@ int main(int ac, char **av) {
 	}
 
 	SearchAlgorithm		*algo;
-	Puzzle				*puzzle;
+	Puzzle				puzzle;
 	unsigned int		start;
 
 	if (ac > 1) {
@@ -24,14 +24,14 @@ int main(int ac, char **av) {
 			exit(EXIT_FAILURE);
 		}
 
-		puzzle = new Puzzle(args.first, args.second);
+		puzzle = Puzzle(args.first, args.second);
 
 	} else {
 		std::vector<int> sequence = {1, 2, 3, 8, 0, 4, 7, 6, 5};
-		puzzle = new Puzzle(3, sequence);
+		puzzle = Puzzle(3, sequence);
 	}
 
-	puzzle->print();
+	puzzle.print();
 
 	std::cout << "A* searching algorithm: \n";
 	algo = new AStar();
@@ -41,7 +41,7 @@ int main(int ac, char **av) {
 
 		((AStar *) algo)->select_heuristics(&chebDistance);
 		start = clock();
-		auto [solvable, move, count] = algo->solve(puzzle);
+		auto [solvable, count, move] = algo->solve(puzzle);
 		if (!solvable) {
 			std::cout << "unsolvable ;(\n";
 		} else {
@@ -51,7 +51,7 @@ int main(int ac, char **av) {
 			std::cout << "total states = " << count << "\n";
 
 			Visualizer visualizer;
-			visualizer.visualize(puzzle, SearchAlgorithm::Solution{solvable, move, count}, time);
+			visualizer.visualize(&puzzle, SearchAlgorithm::Solution{solvable, count, move}, time);
 		}
 
 
@@ -59,7 +59,7 @@ int main(int ac, char **av) {
 
 		((AStar *) algo)->select_heuristics(&euclideanDistance);
 		start = clock();
-		std::tie(solvable, move, count) = algo->solve(puzzle);
+		std::tie(solvable, count, move) = algo->solve(puzzle);
 		if (!solvable) {
 			std::cout << "unsolvable ;(\n";
 		} else {
@@ -89,7 +89,6 @@ int main(int ac, char **av) {
 //
 //	}
 
-    delete puzzle;
 	delete algo;
     return 0;
 }

@@ -38,15 +38,15 @@ class Puzzle {
     void    print(const std::vector<int>&) const;
 };
 
-inline bool is_solvable(Puzzle *puzzle, Puzzle *solution) {
+inline bool is_solvable(Puzzle const& puzzle, Puzzle const& solution) {
 
-	int i_puzzle = count_inversions(puzzle->get_sequence());
-	int i_goal = count_inversions(solution->get_sequence());
+	int i_puzzle = count_inversions(puzzle.get_sequence());
+	int i_goal = count_inversions(solution.get_sequence());
 
-	if (puzzle->get_size() % 2) {
+	if (puzzle.get_size() % 2) {
 		return i_goal % 2 == i_puzzle % 2;
 	}
 
-	return i_goal % 2 == (i_puzzle + puzzle->get_space().first +
-						  solution->get_space().first) % 2;
+	return i_goal % 2 == (i_puzzle + puzzle.get_space().first +
+						  solution.get_space().first) % 2;
 }

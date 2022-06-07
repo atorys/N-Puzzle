@@ -4,7 +4,7 @@
  [_15-Puzzle_](https://en.wikipedia.org/w/index.php?title=15_puzzle&oldid=1086625326), taquin)  
 
 [//]: # ( <img align="center" src="https://media.giphy.com/media/l2Je6sbvJEn1W9OWQ/giphy.gif" width="300" alt="algorithm"/>)
- <img align="center" src="srcs/visualizer.gif" width="300" alt="algorithm"/>
+ <img align="center" src="srcs/resources/visualizer.gif" width="300" alt="algorithm"/>
 
 ## О Проекте
 

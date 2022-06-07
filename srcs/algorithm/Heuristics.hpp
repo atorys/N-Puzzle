@@ -12,27 +12,28 @@ int manhattanDistance(std::vector<int> sequence) {
     return 0;
 }
 
-float euclideanDistance(Puzzle* puzzle, std::map<int, int> goal) {
+float euclideanDistance(Puzzle const& puzzle, std::map<int, int> goal) {
     float distance = 0;
-    for (int i = 0; i < puzzle->get_sequence().size(); ++i) {
-        distance += (float)sqrt(((i / puzzle->get_size() - goal[puzzle->get_sequence()[i]] / puzzle->get_size()) * (i / puzzle->get_size() - goal[puzzle->get_sequence()[i]] / puzzle->get_size())) +
-                         ((i % puzzle->get_size() - goal[puzzle->get_sequence()[i]] % puzzle->get_size()) * (i % puzzle->get_size() - goal[puzzle->get_sequence()[i]] % puzzle->get_size())));
+    for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
+        distance += (float)sqrt(((i / puzzle.get_size() - goal[puzzle.get_sequence()[i]] / puzzle.get_size()) * (i / puzzle.get_size() - goal[puzzle.get_sequence()[i]] / puzzle.get_size())) +
+                         ((i % puzzle.get_size() - goal[puzzle.get_sequence()[i]] % puzzle.get_size()) * (i % puzzle.get_size() - goal[puzzle.get_sequence()[i]] % puzzle.get_size())));
     }
     return distance;
 }
 
-float chebDistance(Puzzle* puzzle, std::map<int, int> goal) {
+float chebDistance(Puzzle const& puzzle, std::map<int, int> goal) {
     float distance = 0;
-    for (int i = 0; i < puzzle->get_sequence().size(); ++i) {
-		distance += std::max(std::abs((i/ puzzle->get_size() - goal[puzzle->get_sequence()[i]]/ puzzle->get_size())), std::abs(i % puzzle->get_size() - goal[puzzle->get_sequence()[i]] % puzzle->get_size()));
+    for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
+		distance += std::max(std::abs((i/ puzzle.get_size() - goal[puzzle.get_sequence()[i]]/ puzzle.get_size())),
+                             std::abs(i % puzzle.get_size() - goal[puzzle.get_sequence()[i]] % puzzle.get_size()));
     }
     return distance;
 }
 
-float myDistance(Puzzle* puzzle, std::map<int, int> goal) {
+float myDistance(Puzzle const& puzzle, std::map<int, int> goal) {
     float distance = 0;
-    for (int i = 0; i < puzzle->get_sequence().size(); ++i) {
-        if (i != goal[puzzle->get_sequence()[i]])
+    for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
+        if (i != goal[puzzle.get_sequence()[i]])
             distance++;
     }
     return distance;
