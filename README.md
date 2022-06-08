@@ -4,8 +4,10 @@
  [_15-Puzzle_](https://en.wikipedia.org/w/index.php?title=15_puzzle&oldid=1086625326), taquin)  
 
 [//]: # ( <img align="center" src="https://media.giphy.com/media/l2Je6sbvJEn1W9OWQ/giphy.gif" width="300" alt="algorithm"/>)
- <img align="center" src="srcs/resources/visualizer.gif" width="300" alt="algorithm"/>
+<!--  <img align="center" src="srcs/resources/visualizer.gif" width="200" alt="algorithm"/> -->
 
+ <div align="left"><img src="srcs/resources/visualizer.gif" width="200" align="left"></div>
+ 
 ## О Проекте
 
 <details>
@@ -39,17 +41,14 @@
  
    ### Решение есть если:   
    - N - **нечетное** и количество инверсий в начальном и конечном состоянии имеет **одинаковую** четность;
-   - N - **четное**, тогда сумма количества инверсий с номером строки, в которой находится пустая ячейка, должна иметь
-   ту же четность, что и сумма количества инверсий в конечном состоянии с новым номером строки пустой ячейки;
-   - в остальных случаях решения не существует.
- 
-     <img src="https://user-images.githubusercontent.com/83991209/171355664-4b7113e1-90b2-4f16-aba8-d18ca4671ebb.png"  width="550">
-
      <div align="right"><img src="https://media.giphy.com/media/xT5LMINTLCSOGdIyEo/giphy.gif" width="300" align="right"></div>
      </details>
 
 
-3. <details> <summary> </summary>
+3. <details> <summary> Алгоритм А* </summary>
+ 
+   > А* - алгоритм поиска, который находит наименьший по стоимости маршрут от начальной до конечной вершины во взвешенном графе
+   
    </details>
    
 4. <details> <summary>  </summary>
