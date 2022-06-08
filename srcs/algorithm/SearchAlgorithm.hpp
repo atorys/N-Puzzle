@@ -17,8 +17,8 @@ class   SearchAlgorithm {
                                     /* total checked states*/ long,
                                     /* list of moves*/ std::vector<Move>>;
 
-	virtual Solution    solve(Puzzle const&) = 0;
-	virtual ~SearchAlgorithm() = default;
+    virtual Solution    solve(Puzzle const&) = 0;
+    virtual ~SearchAlgorithm() = default;
 };
 
 
@@ -30,20 +30,20 @@ class   AStar : public SearchAlgorithm {
 
     using   State = std::pair </* priority value */ float,
                                /* current sequence */ Puzzle>;
-	using   Comporator = struct priorityComparator {
-		bool operator()(State const &a, State const &b) const noexcept {
-			return (a.first > b.first);
+    using   Comporator = struct priorityComparator {
+        bool operator()(State const &a, State const &b) const noexcept {
+            return (a.first > b.first);
 		}
 	};
 
     using   ClosedSet = std::set</*puzzle sequences */ std::vector<int>>;
     using   OpenSet = std::priority_queue</*value type*/ State, std::deque<State>, Comporator>;
-    using   HeuristicsFunc = float (*)(Puzzle const&, std::map<int, int>);
+    using   HeuristicsFunc = float (*)(Puzzle const&, std::map<int, int> const&);
 
   private:
     HeuristicsFunc  heuristics;
-	OpenSet         queue;
-	ClosedSet       visited;
+    OpenSet         queue;
+    ClosedSet       visited;
 
   public:
 
@@ -55,40 +55,40 @@ class   AStar : public SearchAlgorithm {
         return (float)puzzle.get_cost() / 8 + heuristics(puzzle, goal_state);
     }
 
-	Solution    solve(Puzzle const& puzzle) override {
+    Solution    solve(Puzzle const& puzzle) override {
 
-		Puzzle              current, next;
+        Puzzle              current, next;
         std::vector<int>    goal = snailSolution(puzzle.get_size());
-		std::map<int, int>  goal_state = get_goal_map(goal);
+        std::map<int, int>  goal_state = get_goal_map(goal);
         bool                success = false;
 
-		if (!is_solvable(puzzle, Puzzle(puzzle.get_size(), goal))) {
-			return Solution {false, 0, 0};
-		}
+        if (!is_solvable(puzzle, Puzzle(puzzle.get_size(), goal))) {
+            return Solution {false, 0, 0};
+        }
 
-		queue.push(std::pair {priority(puzzle, goal_state), puzzle});
-		while (!queue.empty() && !success) {
-			current = queue.top().second;
+        queue.push(std::pair {priority(puzzle, goal_state), puzzle});
+        while (!queue.empty() && !success) {
+            current = queue.top().second;
             queue.pop();
             visited.insert(current.get_sequence());
             if (current.get_sequence() == goal) {
                 success = true;
             } else {
-				for (int dir = Move::UP; dir != Move::NONE; ++dir) {
-					next = current;
-					if (!next.try_move((Move) dir)) {
+                for (int dir = Move::UP; dir != Move::NONE; ++dir) {
+                    next = current;
+                    if (!next.try_move((Move) dir)) {
                         continue;
                     } else if (next.get_sequence() == goal) {
-						success = true;
-						break;
-					} else if (!visited.count(next.get_sequence())) {
+                        success = true;
+                        break;
+                    } else if (!visited.count(next.get_sequence())) {
                         queue.push(std::pair{priority(next, goal_state), next});
-					}
-				}
-			}
-		}
-		return Solution {true, visited.size(), next.get_moves()};
-	}
+                    }
+                }
+            }
+        }
+        return Solution {true, visited.size(), next.get_moves()};
+    }
 };
 
 
@@ -99,34 +99,34 @@ class   DepthFirstSearch : public SearchAlgorithm {
 
   private:
     OpenSet     stack;
-	ClosedSet   visited;
+    ClosedSet   visited;
 
   public:
-	Solution solve(Puzzle const& puzzle) override {
+    Solution solve(Puzzle const& puzzle) override {
 
-		Puzzle              current, next;
+        Puzzle              current, next;
         std::vector<int>    goal = snailSolution(puzzle.get_size());
 
-		if (!is_solvable(puzzle, Puzzle(puzzle.get_size(), goal))) {
-			return Solution {false, 0, 0};
-		}
+        if (!is_solvable(puzzle, Puzzle(puzzle.get_size(), goal))) {
+            return Solution {false, 0, 0};
+        }
 
-		stack.push(puzzle);
-		while (!stack.empty()) {
-			current = stack.front();
+        stack.push(puzzle);
+        while (!stack.empty()) {
+            current = stack.front();
             stack.pop();
             visited.insert(current.get_sequence());
-			if (current.get_sequence() == goal)
-				break;
-			for (int dir = Move::UP; dir != Move::NONE; ++dir) {
-				next = current;
-				if (!next.try_move((Move) dir))
-					continue;
-				if (!visited.count(next.get_sequence()))
-					stack.push(next);
-			}
-		}
+            if (current.get_sequence() == goal)
+                break;
+            for (int dir = Move::UP; dir != Move::NONE; ++dir) {
+                next = current;
+                if (!next.try_move((Move) dir))
+                    continue;
+                if (!visited.count(next.get_sequence()))
+                    stack.push(next);
+            }
+        }
 
-		return Solution {true, visited.size(), current.get_moves()};
-	}
+        return Solution {true, visited.size(), current.get_moves()};
+    }
 };

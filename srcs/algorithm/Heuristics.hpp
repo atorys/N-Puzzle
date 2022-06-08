@@ -8,32 +8,49 @@
 #include "../utility/utility.hpp"
 #include "map"
 
-int manhattanDistance(std::vector<int> sequence) {
+int manhattanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
     return 0;
 }
 
-float euclideanDistance(Puzzle const& puzzle, std::map<int, int> goal) {
-    float distance = 0;
+float euclideanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
+
+    float	distance = 0;
+	int 	node_x, node_y, goal_x, goal_y;
+
     for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
-        distance += (float)sqrt(((i / puzzle.get_size() - goal[puzzle.get_sequence()[i]] / puzzle.get_size()) * (i / puzzle.get_size() - goal[puzzle.get_sequence()[i]] / puzzle.get_size())) +
-                         ((i % puzzle.get_size() - goal[puzzle.get_sequence()[i]] % puzzle.get_size()) * (i % puzzle.get_size() - goal[puzzle.get_sequence()[i]] % puzzle.get_size())));
+
+		node_x = i / puzzle.get_size();
+		node_y = i % puzzle.get_size();
+		goal_x = goal.at(puzzle.get_sequence()[i]) / puzzle.get_size();
+		goal_y = goal.at(puzzle.get_sequence()[i]) % puzzle.get_size();
+
+		distance += (float)sqrt(((node_x - goal_x) * (node_x - goal_x)) + ((node_y - goal_y) * (node_y - goal_y)));
     }
     return distance;
 }
 
-float chebDistance(Puzzle const& puzzle, std::map<int, int> goal) {
-    float distance = 0;
+float chebDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
+
+    float	distance = 0;
+	int 	node_x, node_y, goal_x, goal_y;
+
     for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
-		distance += std::max(std::abs((i/ puzzle.get_size() - goal[puzzle.get_sequence()[i]]/ puzzle.get_size())),
-                             std::abs(i % puzzle.get_size() - goal[puzzle.get_sequence()[i]] % puzzle.get_size()));
+
+		node_x = i / puzzle.get_size();
+		node_y = i % puzzle.get_size();
+		goal_x = goal.at(puzzle.get_sequence()[i]) / puzzle.get_size();
+		goal_y = goal.at(puzzle.get_sequence()[i]) % puzzle.get_size();
+
+		distance += std::max(std::abs(node_x - goal_x),
+							 std::abs(node_y - goal_y));
     }
     return distance;
 }
 
-float myDistance(Puzzle const& puzzle, std::map<int, int> goal) {
+float myDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
     float distance = 0;
     for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
-        if (i != goal[puzzle.get_sequence()[i]])
+        if (i != goal.at(puzzle.get_sequence()[i]))
             distance++;
     }
     return distance;

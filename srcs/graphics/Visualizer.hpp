@@ -37,7 +37,7 @@ class Visualizer {
     std::pair<int, int>		empty_sprite;
     int 					size;
 
-public:
+  public:
     Visualizer():	window(sf::VideoMode({WIDTH, HEIGHT}), "N-Puzzle") {
         window.setFramerateLimit(30);
         font.loadFromFile(FONT);
@@ -87,7 +87,7 @@ public:
         }
     }
 
-private:
+  private:
     void	set_puzzle(Puzzle *puzzle, SearchAlgorithm::Solution const& solution, double time) {
 
         size = puzzle->get_size();
@@ -183,7 +183,7 @@ private:
     void move(Move dir, int& step) {
         int dx = 0;
         int dy = 0;
-        float speed = 10;
+        float speed = TILE_SIZE;
 
         if (dir == Move::UP) { dx = 0; dy = -1;};
         if (dir == Move::DOWN) { dx = 0; dy = 1;};
