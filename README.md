@@ -1,25 +1,25 @@
-#  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте)  N-Puzzle  
+#  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте) N-Puzzle  
+<div><img src="srcs/resources/visualizer.gif" width="200" align="right"></div>  
+
  Implementation of A* search algorithm to solve N-puzzle for learning about graph-based search algorithms
  ([_пятнашки_](https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0_%D0%B2_15),
- [_15-Puzzle_](https://en.wikipedia.org/w/index.php?title=15_puzzle&oldid=1086625326), taquin)  
+ [_15-Puzzle_](https://en.wikipedia.org/w/index.php?title=15_puzzle&oldid=1086625326), taquin) 
 
 [//]: # ( <img align="center" src="https://media.giphy.com/media/l2Je6sbvJEn1W9OWQ/giphy.gif" width="300" alt="algorithm"/>)
-<!--  <img align="center" src="srcs/resources/visualizer.gif" width="200" alt="algorithm"/> -->
-
- <div align="left"><img src="srcs/resources/visualizer.gif" width="200" align="left"></div>
+<!--  <img align="center" src="srcs/resources/visualizer.gif" width="300" alt="algorithm"/> -->
  
 ## О Проекте
+Алгоритм А* - информированный алгоритм поиска, который находит маршрут наименьшей стоимости между начальной и конечной вершинами во взвешенном графе, для n-puzzle единица графа - состояние ячеек пазла
 
 <details>
 <summary> Основные правила </summary>
 
 - головоломка состоит из квадратного поля N*N элементов;
 - каждая ячейка содержит уникальное число от 1 до N^2 - 1 в рандомном порядке,
-  одна из ячеек остается пустой;
+  одна из ячеек остается пустой;  <div> <img src="https://user-images.githubusercontent.com/83991209/171353109-3b08e489-011d-4119-881f-98715337fa70.png" width="200" align="right"></div> 
 - реализуемый алгоритм находит кратчайшую последовательность движений пустого блока,
-  которая преобразует поле головоломки в конечный вид "snail solution";  
+  которая преобразует поле головоломки в конечный вид "snail solution";
 - за один ход можно менять местами пустой блок с соседними ячейками;  
-  <img src="https://user-images.githubusercontent.com/83991209/171353109-3b08e489-011d-4119-881f-98715337fa70.png"  width="300" >
 </details>
 
 ## Задачи :
@@ -41,14 +41,14 @@
  
    ### Решение есть если:   
    - N - **нечетное** и количество инверсий в начальном и конечном состоянии имеет **одинаковую** четность;
+   - N - **четное**, тогда сумма количества инверсий с номером строки, в которой находится пустая ячейка, должна иметь
+   ту же четность, что и сумма количества инверсий в конечном состоянии с новым номером строки пустой ячейки;
+   - в остальных случаях решения не существует.
      <div align="right"><img src="https://media.giphy.com/media/xT5LMINTLCSOGdIyEo/giphy.gif" width="300" align="right"></div>
      </details>
 
 
-3. <details> <summary> Алгоритм А* </summary>
- 
-   > А* - алгоритм поиска, который находит наименьший по стоимости маршрут от начальной до конечной вершины во взвешенном графе
-   
+3. <details> <summary> </summary>
    </details>
    
 4. <details> <summary>  </summary>
