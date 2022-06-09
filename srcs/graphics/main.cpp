@@ -12,7 +12,6 @@
 
 int main(int ac, char **av) {
 
-	Visualizer n_puzzle;
 
 	Puzzle* puzzle;
 
@@ -23,5 +22,6 @@ int main(int ac, char **av) {
 	}
 
 	puzzle = new Puzzle(args.first, args.second);
+	Visualizer n_puzzle(puzzle);
 	n_puzzle.on();
 }

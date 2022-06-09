@@ -31,10 +31,10 @@ set(SOURCE_FILES_GAME
 
 include_directories(./srcs/resources/SFML-2.5.1/include/)
 include_directories(./srcs/resources/)
-set (SFML_LIBRARIES
-        libsfml-graphics.2.5.1.dylib
-        libsfml-window.2.5.1.dylib
-        libsfml-system.2.5.1.dylib)
+#set (SFML_LIBRARIES
+#        libsfml-graphics.2.5.1.dylib
+#        libsfml-window.2.5.1.dylib
+#        libsfml-system.2.5.1.dylib)
 
 set (SFML_DEPENDENCIES
         -lsfml-graphics
