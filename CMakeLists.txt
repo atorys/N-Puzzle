@@ -7,6 +7,7 @@ set(SOURCE_FILES
 #        srcs/app/main.cpp
         srcs/graphics/main.cpp
         srcs/graphics/Page.hpp
+        srcs/graphics/Assets.hpp
         srcs/models/Puzzle.cpp
         srcs/models/Puzzle.hpp
         srcs/algorithm/SearchAlgorithm.hpp

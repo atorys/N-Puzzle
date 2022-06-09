@@ -3,102 +3,93 @@
 //
 
 #pragma once
-#include "iostream"
-#include "SFML/Graphics.hpp"
-#include "SFML/System.hpp"
-#include "SFML/Window.hpp"
-#include "../models/Puzzle.hpp"
+#include "Assets.hpp"
 
-const int WIDTH = 1000;
-const int HEIGHT = 600;
-const int TEXT_SIZE = 50;
-const int TILE_SIZE = 16;
-const int PADDING = 4;
-float SCALE = 4;
-//const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-//const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
-const char* FONT = "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
-
-class Assets {
-
-	static Assets*	instance;
-	sf::Texture	texture;
-	sf::Font	font;
-
-	Assets() {
-		if (!font.loadFromFile(FONT)
-			|| !texture.loadFromFile(BOXES)) {
-			std::cerr << "[ couldn't load assert ]\n";
-		}
-	}
-
-  public:
-	static Assets*	getInstance() {
-		return !instance ? new Assets() : instance;
-	};
-//	~Assets() { delete instance; };
-	~Assets();
-
-	sf::Texture const&	get_texture() const { return texture; }
-	sf::Font const&		get_font() const	{ return font; }
+enum States {
+	PAUSE,
+	GO
 };
-
-Assets*	Assets::instance = 0;
 
 class Menu {
 
 	sf::RenderWindow*		window;
 
-	std::vector<sf::Text>	menu_bars;
-	int 					controller;
+	std::vector<sf::Text>					menu;
+	std::vector<std::vector<std::string>>	bars;
+	std::vector<int>						state;
+	int 									bar;
 
   public:
 	Menu(sf::RenderWindow* w): window(w) {
-		controller = 0;
-		menu_bars.emplace_back("HEURISTICS 1", Assets::getInstance()->get_font(), TEXT_SIZE);
-		menu_bars.emplace_back("HEURISTICS 2", Assets::getInstance()->get_font(), TEXT_SIZE);
-		menu_bars.emplace_back("HEURISTICS 3", Assets::getInstance()->get_font(), TEXT_SIZE);
+		bar = 0;
+		state = {1, 1, 1};
+		bars.emplace_back();
+		bars.emplace_back();
+		bars.emplace_back();
 
-		for (auto & text : menu_bars) {
+		bars[0] = {"ALGORITHM  ", "A*", "DFS"};
+		bars[1] = {"HEURISTICS  ", "NO", "EUCLIDEAN", "CHEBYSHEV", "MANHATTAN"};
+		bars[2] = {"SOLVE", "", ""};
+
+		menu.emplace_back(bars[0][0], Assets::getInstance()->get_font(), TEXT_SIZE);
+		menu.emplace_back(bars[1][0], Assets::getInstance()->get_font(), TEXT_SIZE);
+		menu.emplace_back(bars[2][0], Assets::getInstance()->get_font(), TEXT_SIZE);
+
+		for (auto & text : menu) {
 			text.setFillColor(sf::Color::White);
 			text.setStyle(sf::Text::Bold);
 		}
 
-		menu_bars[controller].setString("> " + menu_bars[controller].getString());
-		menu_bars[controller].setFillColor(sf::Color::Yellow);
+		menu[bar].setString("> " + menu[bar].getString());
+		menu[bar].setFillColor(sf::Color::Green);
 	}
 
 	void down() {
-		menu_bars[controller].setFillColor(sf::Color::White);
-		menu_bars[controller].setString(menu_bars[controller].getString().substring(2));
-		++controller;
-		if (controller == menu_bars.size())
-			controller = 0;
+		menu[bar].setFillColor(sf::Color::White);
+		menu[bar].setString(menu[bar].getString().substring(2));
+		++bar;
+		if (bar == menu.size())
+			bar = 0;
 
-		menu_bars[controller].setString("> " + menu_bars[controller].getString());
-		menu_bars[controller].setFillColor(sf::Color::Yellow);
+		menu[bar].setString("> " + menu[bar].getString());
+		menu[bar].setFillColor(sf::Color::Green);
 	}
 
 	void up() {
-		menu_bars[controller].setFillColor(sf::Color::White);
-		menu_bars[controller].setString(menu_bars[controller].getString().substring(2));
-		--controller;
-		if (controller == -1)
-			controller = menu_bars.size() - 1;
+		menu[bar].setFillColor(sf::Color::White);
+		menu[bar].setString(menu[bar].getString().substring(2));
+		--bar;
+		if (bar == -1)
+			bar = menu.size() - 1;
 
-		menu_bars[controller].setString("> " + menu_bars[controller].getString());
-		menu_bars[controller].setFillColor(sf::Color::Yellow);
+		menu[bar].setString("> " + menu[bar].getString());
+		menu[bar].setFillColor(sf::Color::Green);
+	}
+
+	void swap(States* current) {
+		if (bar == 2) {
+			*current = (*current == PAUSE) ? GO : PAUSE;
+		}
+		state[bar]++;
+		if (state[bar] == bars[bar].size()) {
+			state[bar] = 1 + (bar == 1);
+		}
+		if (bar == 1 && state[0] == 2)
+			state[bar] = 1;
+
+		menu[bar].setString(bars[bar][0] + bars[bar][state[bar]]);
+		menu[bar].setString("> " + menu[bar].getString());
+		menu[bar].setFillColor(sf::Color::Green);
 	}
 
 	void display() {
-		float padding_y = HEIGHT / 3;
-		float padding_x = WIDTH / 10;
+		float padding_y = 20;
+		float padding_x = WIDTH / 8;
 
-		for (int i = 0; i < menu_bars.size(); ++i) {
-			padding_y += 40;
-			menu_bars[i].setPosition(padding_x, padding_y);
-			window->draw(menu_bars[i]);
+		for (int i = 0; i < menu.size(); ++i) {
+			menu[i].setPosition(padding_x, padding_y);
+			window->draw(menu[i]);
+			padding_y += 30;
 		}
 	}
 };
@@ -124,10 +115,10 @@ class Solver {
 		space_x = puzzle->get_space().first;
 		space_y = puzzle->get_space().second;
 
-		int percentage = size * (SCALE * TILE_SIZE) / (HEIGHT / 100);
+		int percentage = size * (SCALE * TILE_SIZE) / (WIDTH / 100);
 		while (percentage <= 50 || percentage >= 60) {
 			SCALE *= percentage < 50 ? 1.25 : 0.75;
-			percentage = size * (SCALE * TILE_SIZE) / (HEIGHT / 100);
+			percentage = size * (SCALE * TILE_SIZE) / (WIDTH / 100);
 		}
 
 		numbers.clear();
@@ -146,10 +137,10 @@ class Solver {
 		set_positions(numbers, TILE_SIZE*SCALE / 4.5);
 
 	}
-//	float 	get_x(float padding) { return (WIDTH  - TILE_SIZE*SCALE*size)/1.75f + padding; }
-	float 	get_x(float padding) { return (WIDTH)/1.8f + padding; }
+	float 	get_x(float padding) { return (WIDTH  - TILE_SIZE*SCALE*size)/2.f + padding; }
+//	float 	get_x(float padding) { return (WIDTH)/1.8f + padding; }
 
-	float 	get_y(float padding) { return (HEIGHT - TILE_SIZE*SCALE*size)/4.f + padding; }
+	float 	get_y(float padding) { return (HEIGHT - TILE_SIZE*SCALE*size)/2.5f + padding; }
 
 	template<class T>
 	void 	set_positions(std::vector<T>& instance, float k) {
@@ -167,7 +158,48 @@ class Solver {
 		}
 	}
 
+	void move(Move dir, int& step) {
+		int dx = 0;
+		int dy = 0;
+		float speed = TILE_SIZE;
 
+		if (dir == Move::UP) { dx = 0; dy = -1;};
+		if (dir == Move::DOWN) { dx = 0; dy = 1;};
+		if (dir == Move::RIGHT) { dx = 1; dy = 0; };
+		if (dir == Move::LEFT) { dx = -1; dy = 0; };
+
+		sf::Vector2f pos_1 = sprites[space_x * size + space_y].getPosition();
+		sf::Vector2f pos_2 = numbers[space_x * size + space_y].getPosition();
+		sf::Vector2f pos_3 = sprites[(space_x + dy) * size + space_y + dx].getPosition();
+		sf::Vector2f pos_4 = numbers[(space_x + dy) * size + space_y + dx].getPosition();
+
+		sprites[space_x * size + space_y].setPosition(pos_3);
+		numbers[space_x * size + space_y].setPosition(pos_4);
+
+		--step;
+		for (float i = 0; i < TILE_SIZE*SCALE;) {
+			sprites[(space_x + dy) * size + space_y + dx].move(-1 * dx * speed, -1 * dy * speed);
+			numbers[(space_x + dy) * size + space_y + dx].move(-1 * dx * speed, -1 * dy * speed);
+
+			window->clear(sf::Color::Black);
+			display(step);
+			window->display();
+			i += speed;
+		}
+
+		sprites[(space_x + dy) * size + space_y + dx].setPosition(pos_1);
+		numbers[(space_x + dy) * size + space_y + dx].setPosition(pos_2);
+
+		std::swap(sprites[(space_x + dy) * size + space_y + dx], sprites[space_x * size + space_y]);
+		std::swap(numbers[(space_x + dy) * size + space_y + dx], numbers[space_x * size + space_y]);
+
+		space_x += dy;
+		space_y += dx;
+
+		window->clear(sf::Color::Black);
+		display(step);
+		window->display();
+	}
 
 	void 	display(int step) {
 		for (int i = 0; i < sprites.size(); ++i) {
@@ -178,28 +210,28 @@ class Solver {
 
 };
 
-class Screen {
+class Visualizer {
 
-    sf::RenderWindow	window;
+	sf::RenderWindow	window;
 	Menu				menu;
 	Solver				solver;
+	States				state;
 
   public:
-	Screen(std::string const& title,
-		   unsigned int width,
-		   unsigned int height,
-		   Puzzle* puzzle):
-									window(sf::VideoMode({width, height}), title),
-									menu(&window),
-									solver(&window, puzzle){
+	Visualizer(std::string const& title,
+			   unsigned int width,
+			   unsigned int height,
+			   Puzzle* puzzle):
+								window(sf::VideoMode({width, height}), title),
+								menu(&window),
+								solver(&window, puzzle) {
 
 		window.setFramerateLimit(60);
 		window.setMouseCursorVisible(false);
-
-
+		state = PAUSE;
 	}
 
-	void display() {
+	void on() {
 		sf::Event	event;
 
 		while (window.isOpen()) {
@@ -214,25 +246,20 @@ class Screen {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 						menu.down();
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
-						;
+						menu.swap(&state);
 				}
 			}
-			menu.display();
-			solver.display(0);
-			window.display();
-			window.clear(sf::Color::Black);
+			display();
 		}
 	}
-};
 
-class Visualizer {
-	Screen		screen;
+	void display() {
+		menu.display();
+		solver.display(0);
+		if (state == GO) {
 
-  public:
-	Visualizer(Puzzle* puzzle): screen("N-Puzzle", WIDTH, HEIGHT, puzzle) {
-	}
-
-	void	on() {
-		screen.display();
-	}
+		}
+		window.display();
+		window.clear(sf::Color::Black);
+	};
 };

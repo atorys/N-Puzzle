@@ -2,8 +2,6 @@
 // Created by atory on 02.06.22.
 //
 
-#include<stdio.h>
-#include<math.h>
 #include "../algorithm/SearchAlgorithm.hpp"
 #include "../algorithm/Heuristics.hpp"
 
@@ -22,6 +20,6 @@ int main(int ac, char **av) {
 	}
 
 	puzzle = new Puzzle(args.first, args.second);
-	Visualizer n_puzzle(puzzle);
+	Visualizer  n_puzzle("N-Puzzle", WIDTH, HEIGHT, puzzle);
 	n_puzzle.on();
 }
