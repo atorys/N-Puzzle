@@ -16,10 +16,10 @@ const int TEXT_SIZE = 50;
 const int TILE_SIZE = 16;
 const int PADDING = 4;
 float SCALE = 4;
-const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
-//const char* FONT = "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-//const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
+//const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
+//const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
+const char* FONT = "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
+const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
 
 class Visualizer;
 class Assets {

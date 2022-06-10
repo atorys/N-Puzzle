@@ -27,7 +27,7 @@ class Menu {
 		bars.emplace_back();
 		bars.emplace_back();
 
-		bars[0] = {"ALGORITHM  ", "A*", "DFS", "BFS"};
+		bars[0] = {"ALGORITHM  ", "A*", "DFS"};
 		bars[1] = {"HEURISTICS  ", "NO", "EUCLIDEAN", "CHEBYSHEV", "MANHATTAN"};
 		bars[2] = {"SOLVE", "", ""};
 
@@ -42,14 +42,6 @@ class Menu {
 
 		menu[bar].setString("> " + menu[bar].getString());
 		menu[bar].setFillColor(sf::Color::Green);
-	}
-
-	std::string const&	get_algorithm() {
-		return bars[0][state[0]];
-	}
-
-	std::string const&	get_heuristics() {
-		return bars[1][state[1]];
 	}
 
 	void down() {
@@ -105,9 +97,6 @@ class Menu {
 class Solver {
 	sf::RenderWindow*		window;
 
-	SearchAlgorithm::Solution	*solution;
-	int							steps;
-
 	std::vector<sf::Sprite>	sprites;
 	std::vector<sf::Text>	numbers;
 	std::vector<sf::Text>	texts;
@@ -116,13 +105,8 @@ class Solver {
 	int 					size;
 
   public:
-	Solver(sf::RenderWindow* w, Puzzle* puzzle): window(w), steps(0), solution(nullptr) {
+	Solver(sf::RenderWindow* w, Puzzle* puzzle): window(w) {
 		set_puzzle(puzzle);
-	}
-
-	void	set_solution(SearchAlgorithm::Solution* s) {
-		this->solution = s;
-		this->steps = 0;
 	}
 
 	void	set_puzzle(Puzzle *puzzle) {
@@ -192,7 +176,7 @@ class Solver {
 		sprites[space_x * size + space_y].setPosition(pos_3);
 		numbers[space_x * size + space_y].setPosition(pos_4);
 
-//		--step;
+		--step;
 		for (float i = 0; i < TILE_SIZE*SCALE;) {
 			sprites[(space_x + dy) * size + space_y + dx].move(-1 * dx * speed, -1 * dy * speed);
 			numbers[(space_x + dy) * size + space_y + dx].move(-1 * dx * speed, -1 * dy * speed);
@@ -218,9 +202,6 @@ class Solver {
 	}
 
 	void 	display(int step) {
-		if (solution && steps < std::get<2>(*solution).size()) {
-			move(std::get<2>(*solution)[steps++], step);
-		}
 		for (int i = 0; i < sprites.size(); ++i) {
 			window->draw(sprites[i]);
 			window->draw(numbers[i]);
@@ -235,44 +216,19 @@ class Visualizer {
 	Menu				menu;
 	Solver				solver;
 	States				state;
-	SearchAlgorithm		*algorithm;
-
-	Puzzle*												puzzle;
-	std::map<std::string, SearchAlgorithm *>			algorithms;
-	std::map<std::string, AStar::HeuristicsFunc>		heuristics;
-	std::map<std::string, SearchAlgorithm::Solution>	solutions;
 
   public:
 	Visualizer(std::string const& title,
 			   unsigned int width,
 			   unsigned int height,
-			   Puzzle* p):
+			   Puzzle* puzzle):
 								window(sf::VideoMode({width, height}), title),
 								menu(&window),
-								solver(&window, p),
-								puzzle(p) {
+								solver(&window, puzzle) {
 
 		window.setFramerateLimit(60);
 		window.setMouseCursorVisible(false);
 		state = PAUSE;
-
-		algorithms["A*"] = new AStar();
-		algorithms["DFS"] = new DepthFirstSearch();
-		algorithms["BFS"] = new DepthFirstSearch();
-
-		heuristics["NO"] = nullptr;
-		heuristics["EUCLIDEAN"] = &euclideanDistance;
-		heuristics["CHEBYSHEV"] = &chebDistance;
-		heuristics["MANHATTAN"] = &manhattanDistance;
-	}
-
-	~Visualizer() {
-		for (auto algo : algorithms) {
-			if (algo.second) {
-				delete algo.second;
-			}
-			algo.second = nullptr;
-		}
 	}
 
 	void on() {
@@ -301,14 +257,7 @@ class Visualizer {
 		menu.display();
 		solver.display(0);
 		if (state == GO) {
-			algorithm = algorithms[menu.get_algorithm()];
-			if (menu.get_algorithm() == "A*" && menu.get_heuristics() != "NO")
-				((AStar *)algorithm)->select_heuristics(heuristics[menu.get_heuristics()]);
-			if (!solutions.count(menu.get_algorithm() + menu.get_heuristics())) {
-				solutions[menu.get_algorithm() + menu.get_heuristics()] = algorithm->solve(*puzzle);
-				solver.set_solution(&(solutions[menu.get_algorithm() + menu.get_heuristics()]));
-			}
-			state = PAUSE;
+
 		}
 		window.display();
 		window.clear(sf::Color::Black);
