@@ -20,9 +20,8 @@ class Menu {
 	int 									bar;
 
   public:
-	Menu(sf::RenderWindow* w): window(w) {
-		bar = 0;
-		state = {1, 1, 1};
+	Menu(sf::RenderWindow* w): window(w), bar(0), state({1, 1, 1}) {
+
 		bars.emplace_back();
 		bars.emplace_back();
 		bars.emplace_back();
@@ -216,6 +215,7 @@ class Visualizer {
 	Menu				menu;
 	Solver				solver;
 	States				state;
+	SearchAlgorithm		*algorithm;
 
   public:
 	Visualizer(std::string const& title,
