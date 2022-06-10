@@ -5,7 +5,7 @@
 #include "../algorithm/SearchAlgorithm.hpp"
 #include "../algorithm/Heuristics.hpp"
 
-#include "Page.hpp"
+#include "Graphics.hpp"
 
 
 int main(int ac, char **av) {
@@ -20,6 +20,6 @@ int main(int ac, char **av) {
 	}
 
 	puzzle = new Puzzle(args.first, args.second);
-	Visualizer  n_puzzle("N-Puzzle", WIDTH, HEIGHT, puzzle);
+	Visualizer  n_puzzle(*puzzle);
 	n_puzzle.on();
 }

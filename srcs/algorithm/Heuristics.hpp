@@ -8,11 +8,11 @@
 #include "../utility/utility.hpp"
 #include "map"
 
-int manhattanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
+float	manhattanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
     return 0;
 }
 
-float euclideanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
+float	euclideanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
 
     float	distance = 0;
 	int 	node_x, node_y, goal_x, goal_y;
@@ -29,7 +29,7 @@ float euclideanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
     return distance;
 }
 
-float chebDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
+float	chebDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
 
     float	distance = 0;
 	int 	node_x, node_y, goal_x, goal_y;
@@ -47,7 +47,7 @@ float chebDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
     return distance;
 }
 
-float myDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
+float	myDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
     float distance = 0;
     for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
         if (i != goal.at(puzzle.get_sequence()[i]))

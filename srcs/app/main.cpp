@@ -5,7 +5,7 @@
 #include <iomanip>
 #include "../algorithm/SearchAlgorithm.hpp"
 #include "../algorithm/Heuristics.hpp"
-#include "../graphics/Visualizer.hpp"
+#include "../graphics/Graphics.hpp"
 
 int main(int ac, char **av) {
 
@@ -50,8 +50,10 @@ int main(int ac, char **av) {
 			std::cout << "moves = " << move.size() << "\t";
 			std::cout << "total states = " << count << "\n";
 
-			Visualizer visualizer;
-			visualizer.visualize(&puzzle, SearchAlgorithm::Solution{solvable, count, move}, time);
+			Visualizer visualizer(puzzle);
+//			visualizer.visualize(&puzzle, SearchAlgorithm::Solution{solvable, count, move}, time);
+//			visualizer.set_puzzle(&puzzle, SearchAlgorithm::Solution{solvable, count, move}, time);
+			visualizer.on();
 		}
 
 
