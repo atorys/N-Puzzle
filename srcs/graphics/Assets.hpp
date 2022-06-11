@@ -10,27 +10,33 @@
 #include "SFML/Window.hpp"
 #include "../models/Puzzle.hpp"
 
-const int WIDTH = 600;
-const int HEIGHT = 800;
-const int TEXT_SIZE = 50;
+const int WIDTH = 550;
+const int HEIGHT = 750;
 const int TILE_SIZE = 16;
-const int PADDING = 4;
+const int PADDING = 7;
 float SCALE = 4;
-//const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-//const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
-const char* FONT = "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
+const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
+const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
+const char* ICONS =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/icons.png";
+//const char* FONT = "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
+//const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
 
-class Visualizer;
+enum States {
+	PAUSE = 0,
+	GO
+};
+
 class Assets {
 
 	static Assets*	instance;
-	sf::Texture	texture;
-	sf::Font	font;
+	sf::Texture		texture;
+	sf::Texture		icons;
+	sf::Font		font;
 
 	Assets() {
 		if (!font.loadFromFile(FONT)
-			|| !texture.loadFromFile(BOXES)) {
+			|| !texture.loadFromFile(BOXES)
+			|| !icons.loadFromFile(ICONS)) {
 			std::cerr << "[ couldn't load assert ]\n";
 		}
 	}
@@ -43,6 +49,7 @@ class Assets {
 	~Assets();
 
 	sf::Texture const&	get_texture() const { return texture; }
+	sf::Texture const&	get_icons() const	{ return icons; }
 	sf::Font const&		get_font() const	{ return font; }
 };
 

@@ -13,8 +13,7 @@
  */
 class   SearchAlgorithm {
   public:
-    using   Solution = std::tuple </* is puzzle solvable*/ bool,
-                                    /* timing */ double,
+    using   Solution = std::tuple < /* timing */ double,
                                     /* total checked states*/ long,
                                     /* list of moves*/ std::vector<Move>>;
 
@@ -66,10 +65,6 @@ class   AStar : public SearchAlgorithm {
 
 		unsigned long 		start = clock();
 
-        if (!is_solvable(puzzle, Puzzle(puzzle.get_size(), goal))) {
-            return Solution {false, 0, 0};
-        }
-
         queue.push(std::pair {priority(puzzle, goal_state), puzzle});
         while (!queue.empty() && !success) {
             current = queue.top().second;
@@ -91,7 +86,7 @@ class   AStar : public SearchAlgorithm {
                 }
             }
         }
-        return Solution {true, (double)(clock() - start) / 1000000, visited.size(), next.get_moves()};
+        return Solution {(double)(clock() - start) / 1000000, visited.size(), next.get_moves()};
     }
 };
 
@@ -112,10 +107,6 @@ class   DepthFirstSearch : public SearchAlgorithm {
         std::vector<int>    goal = snailSolution(puzzle.get_size());
 		unsigned long		start = clock();
 
-        if (!is_solvable(puzzle, Puzzle(puzzle.get_size(), goal))) {
-            return Solution {false, 0, 0, 0};
-        }
-
         stack.push(puzzle);
         while (!stack.empty()) {
             current = stack.front();
@@ -132,6 +123,6 @@ class   DepthFirstSearch : public SearchAlgorithm {
             }
         }
 
-        return Solution {true, (double)(clock() - start) / 1000000, visited.size(), current.get_moves()};
+        return Solution {(double)(clock() - start) / 1000000, visited.size(), current.get_moves()};
     }
 };

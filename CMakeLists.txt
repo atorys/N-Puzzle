@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCE_FILES
 #        srcs/app/main.cpp
         srcs/graphics/main.cpp
-        srcs/graphics/Page.hpp
-        srcs/graphics/Assets.hpp
+        srcs/graphics/Visualizer.hpp
         srcs/models/Puzzle.cpp
         srcs/models/Puzzle.hpp
         srcs/algorithm/SearchAlgorithm.hpp
@@ -31,6 +30,8 @@ set(SOURCE_FILES_GAME
 
 
 include_directories(./srcs/resources/SFML-2.5.1/include/)
+include_directories(./srcs/algorithm/)
+include_directories(./srcs/graphics/)
 include_directories(./srcs/resources/)
 #set (SFML_LIBRARIES
 #        libsfml-graphics.2.5.1.dylib

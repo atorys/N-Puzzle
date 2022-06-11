@@ -8,241 +8,143 @@
 #include "SFML/System.hpp"
 #include "SFML/Window.hpp"
 
-#include "../algorithm/SearchAlgorithm.hpp"
-#include "../algorithm/Heuristics.hpp"
-
 #include "unordered_map"
+#include "Assets.hpp"
 
-const int WIDTH = 550;
-const int HEIGHT = 750;
-const int TILE_SIZE = 16;
-const int PADDING = 4;
-const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
+class Graphics {
 
-float SCALE = 4;
-
-enum States {
-	PAUSE,
-	GO
-};
-
-class Visualizer {
-
-	sf::RenderWindow	window;
-
-	sf::Font			font;
-	sf::Texture			texture;
+	sf::RenderWindow		window;
 
 	std::vector<sf::Sprite>	sprites;
+	std::vector<sf::Sprite>	icons;
 	std::vector<sf::Text>	numbers;
 	std::vector<sf::Text>	texts;
-	std::pair<int, int>		empty_sprite;
+
+	bool 					solvable;
+	int						space_x;
+	int						space_y;
 	int 					size;
 
-	SearchAlgorithm												*algorithm;
-
-	Puzzle														puzzle;
-	std::unordered_map<std::string, SearchAlgorithm *>			algorithms;
-	std::unordered_map<std::string, AStar::HeuristicsFunc>		heuristics;
-	std::unordered_map<std::string, SearchAlgorithm::Solution>	solutions;
-
-	std::vector<std::vector<std::string>>	bars;
-	int bar;
-	std::vector<int> select;
-
-	std::string	current_solution;
+	std::vector<sf::Color>		colors;
+	std::vector<std::string>	bars;
+	int							bar;
 
   public:
-	Visualizer(Puzzle const& p):	window(sf::VideoMode({WIDTH, HEIGHT}), "N-Puzzle"),
-									puzzle(p)
-	{
-		window.setFramerateLimit(30);
-		font.loadFromFile(FONT);
-		texture.loadFromFile(BOXES);
+	Graphics(Puzzle const& puzzle,
+			 bool is_solvable):
 
-		bar = 0;
-		select = {0, 1};
+									window(sf::VideoMode({WIDTH, HEIGHT}), "N-Puzzle"),
+									size(puzzle.get_size()),
+									solvable(is_solvable),
+									bar(0),
+									bars({"    EUCLIDEAN >", " < CHEBYSHEV >", " < MANHATTAN   "}),
+									colors({{203, 255, 77}, {147,112,219}, {255,215,0}}) {
 
-		bars.emplace_back();
-		bars.emplace_back();
+		window.setFramerateLimit(60);
+		window.setMouseCursorVisible(false);
 
-		bars[0] = {"A*", "DFS", "BFS"};
-		bars[1] = {"NO", "EUCLIDEAN", "CHEBYSHEV", "MANHATTAN"};
-
-		algorithms["A*"] = new AStar();
-		algorithms["DFS"] = new DepthFirstSearch();
-		algorithms["BFS"] = new DepthFirstSearch();
-
-		heuristics["NO"] = nullptr;
-		heuristics["EUCLIDEAN"] = &euclideanDistance;
-		heuristics["CHEBYSHEV"] = &chebDistance;
-		heuristics["MANHATTAN"] = &chebDistance;
-
-		current_solution = "?";
-		solutions[current_solution] = SearchAlgorithm::Solution{false, 0, 0, 0};
-
-		bars[bar][select[bar]] = ("> " + bars[bar][select[bar]]);
-
-		texts.clear();
-		for (int i = 0; i < 7; ++i) {
-			texts.emplace_back("", font, 40 + 15 * (i < 3) + 20 * (i == 3));
-			texts[i].setFillColor(sf::Color::White);
-//			texts[i].setStyle(sf::Text::Bold);
-		}
-		set_puzzle(&puzzle);
-	}
-
-	~Visualizer() {
-		for (auto algo : algorithms) {
-			if (algo.second) {
-				delete algo.second;
+		if (solvable) {
+			for (int i = 0; i < 5; ++i) {
+				texts.emplace_back("", Assets::getInstance()->get_font(), 45 + 10 * (i < 1) + 15 * (i == 1));
+				texts[i].setFillColor(sf::Color::White);
 			}
-			algo.second = nullptr;
+			texts[0].setString(bars[bar]);
+			texts[0].setFillColor(colors[bar]);
+		} else {
+			texts.emplace_back("NOT SOLVABLE ;(", Assets::getInstance()->get_font(), 50);
+			texts[0].setFillColor(sf::Color::Red);
+		}
+
+		int percentage;
+		while ((percentage = size * (SCALE * TILE_SIZE) / (WIDTH / 100)) <= 60 || percentage >= 70) {
+			SCALE *= percentage < 60 ? 1.25 : 0.75;
+		}
+
+		set_puzzle(puzzle, SearchAlgorithm::Solution{0,0,0});
+		icons.emplace_back(Assets::getInstance()->get_icons(), sf::IntRect(1 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+		icons.emplace_back(Assets::getInstance()->get_icons(), sf::IntRect(0, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+		for (auto &icon : icons) {
+			icon.setScale(1.8, 1.8);
+			icon.setPosition(get_x(0), get_y(HEIGHT / 2.5) + 75);
 		}
 	}
 
-	void    down() {
-		bars[bar][select[bar]] = bars[bar][select[bar]].substr(2);
-		texts[bar].setFillColor(sf::Color::White);
+	sf::RenderWindow&	get_window() { return window; }
+	std::string const&	get_selected_bar() { return bars[bar]; }
+
+	void	display(States state, int& steps, SearchAlgorithm::Solution const& solution) {
+		if (state == GO && solvable) {
+			if (steps > 0)
+				move(std::get<2>(solution)[std::get<2>(solution).size() - steps], steps);
+			else {
+				draw_puzzle(0, state);
+			}
+		}
+		else
+			draw_puzzle(steps > 0 ? steps : std::get<2>(solution).size(), state);
+		window.display();
+		window.clear(sf::Color{0,25,45});
+	};
+
+	int		select() {
 		++bar;
 		if (bar == bars.size())
 			bar = 0;
-		bars[bar][select[bar]] = ("> " + bars[bar][select[bar]]);
-		texts[bar].setFillColor(sf::Color::Green);
+		texts[0].setString(bars[bar]);
+		texts[0].setFillColor(colors[bar]);
+		return bar;
 	}
 
-	void    up() {
-		bars[bar][select[bar]] = bars[bar][select[bar]].substr(2);
-		texts[bar].setFillColor(sf::Color::White);
-		--bar;
-		if (bar < 0)
-			bar = bars.size() - 1;
-		bars[bar][select[bar]] = ("> " + bars[bar][select[bar]]);
-		texts[bar].setFillColor(sf::Color::Green);
-	}
+	void	set_puzzle(Puzzle const& puzzle, SearchAlgorithm::Solution const& solution) {
 
-	void selectt(States *state, int* steps) {
-		bars[bar][select[bar]] = bars[bar][select[bar]].substr(2);
-		++select[bar];
-		if (select[bar] == bars[bar].size())
-			select[bar] = 0 + (!select[0]);
-		if (select[0]) {
-			select[1] = 0;
-		} else if (!select[1])
-			select[1] = 1;
-//		if (bar == 2) {
-//			select[bar] = 0;
-//			if (*state == GO) {
-//				*state = PAUSE;
-//				bars[2][0] = "OK";
-//			} else {
-//				std::string prev_solution = current_solution;
-//				current_solution = bars[0][select[0]] + bars[1][select[1]];
-//				if (!solutions.count(current_solution)) {
-//					algorithm = algorithms[bars[0][select[0]]];
-//					if (bars[0][select[0]] == bars[0][0]) {
-//						((AStar *) algorithm)->select_heuristics(heuristics[bars[1][select[1]]]);
-//					}
-//					solutions[current_solution] = algorithm->solve(puzzle);
-//					*steps = std::get<3>(solutions[current_solution]).size();
-//					set_puzzle(&puzzle);
-//				} else if (!*steps || prev_solution != current_solution) {
-//					*steps = std::get<3>(solutions[current_solution]).size();
-//					set_puzzle(&puzzle);
-//				}
-//				*state = GO;
-//				bars[2][0] = "PAUSE";
-//			}
-//		}
-		bars[bar][select[bar]] = ("> " + bars[bar][select[bar]]);
-	}
-
-	void on() {
-		sf::Event	event;
-		States		state = PAUSE;
-		int 		steps = 0;
-
-		while (window.isOpen()) {
-			while (window.pollEvent(event)) {
-				if (event.type == sf::Event::Closed
-					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-					window.close();
-				}
-				if (event.type == sf::Event::KeyPressed) {
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && state == PAUSE)
-						up();
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && state == PAUSE)
-						down();
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && state == PAUSE) {
-						selectt(&state, &steps);
-					}
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-						if (state == GO) {
-							state = PAUSE;
-						} else {
-							std::string prev_solution = current_solution;
-							current_solution = bars[0][select[0]] + bars[1][select[1]];
-							if (!solutions.count(current_solution)) {
-								algorithm = algorithms[bars[0][select[0]]];
-								if (bars[0][select[0]] == bars[0][0]) {
-									((AStar *) algorithm)->select_heuristics(heuristics[bars[1][select[1]]]);
-								}
-								solutions[current_solution] = algorithm->solve(puzzle);
-								steps = std::get<3>(solutions[current_solution]).size();
-								set_puzzle(&puzzle);
-							} else if (!steps || prev_solution != current_solution) {
-								steps = std::get<3>(solutions[current_solution]).size();
-								set_puzzle(&puzzle);
-							}
-							state = GO;
-						}
-					}
-				}
-			}
-			display(state, steps);
-		}
-	}
-
-	void display(States state, int& steps) {
-		if (state == GO) {
-			if (steps > 0)
-				move(std::get<3>(solutions[current_solution])[std::get<3>(solutions[current_solution]).size() - steps], steps);
-			else
-				draw_puzzle(0);
-		}
-		else
-			draw_puzzle(steps > 0 ? steps : std::get<3>(solutions[current_solution]).size());
-		window.display();
-		window.clear(sf::Color::Black);
-	};
-
-  public:
-
-	void	set_puzzle(Puzzle *p) {
-
-		size = p->get_size();
-
-		int percentage = size * (SCALE * TILE_SIZE) / (WIDTH / 100);
-		while (percentage <= 60 || percentage >= 70) {
-			SCALE *= percentage < 60 ? 1.25 : 0.75;
-			percentage = size * (SCALE * TILE_SIZE) / (WIDTH / 100);
+		for (int i = 0; i < size * size; ++i) {
+			sprites.emplace_back(sf::Sprite{Assets::getInstance()->get_texture(),
+											sf::IntRect(5 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)});
+			numbers.emplace_back(sf::Text{std::to_string(puzzle.get_sequence()[i]),
+										  Assets::getInstance()->get_font(), TILE_SIZE * 3});
+			numbers[i].setFillColor(sf::Color::Black);
 		}
 
-		set_sprites(p);
-		set_numbers(p);
+		set_positions(sprites, 0);
+		set_positions(numbers, TILE_SIZE*SCALE / 4.5);
 
-		auto [solvable, time, count, move] = solutions[current_solution];
+		float padding_y = get_y(HEIGHT / 2.5) + 40;
+		float padding_x = get_x(0);
 
-		texts[3].setString(std::string("SOLVABLE = ") + (solvable ? "YES" : "?"));
-		texts[4].setString(std::string("TIME = ") + (time ? std::to_string(time) : "?") + " S");
-		texts[5].setString(std::string("STEPS = " + (move.size() ? std::to_string(move.size()) : "?")));
-		texts[6].setString("STATES = " + (count ? std::to_string(count) : "?"));
-
+		texts[0].setPosition(padding_x, 15);
+		for (int i = 1; i < texts.size(); ++i) {
+			texts[i].setPosition(padding_x, padding_y);
+			padding_y += 30 + (i == 1) * 30;
+		}
+		if (solvable)
+			reset_puzzle(puzzle, solution);
 	}
-	float 	get_x(float padding) { return (WIDTH  - TILE_SIZE*SCALE*size)/2.f + padding; }
 
-	float 	get_y(float padding) { return (HEIGHT - TILE_SIZE*SCALE*size)/4.5f + padding; }
+	void	reset_puzzle(Puzzle const& puzzle, SearchAlgorithm::Solution const& solution) {
+
+		space_x = puzzle.get_space().first;
+		space_y = puzzle.get_space().second;
+
+		for (int i = 0; i < size * size; ++i) {
+			sprites[i].setScale(SCALE, SCALE);
+			numbers[i].setString(std::to_string(puzzle.get_sequence()[i]));
+			numbers[i].setCharacterSize(TILE_SIZE * 3);
+		}
+
+		sprites[space_x * size + space_y].setScale(0, 0);
+		numbers[space_x * size + space_y].setCharacterSize(0);
+
+		auto[time, count, move] = solution;
+		texts[1].setString("  ?");
+		texts[2].setString(std::string("TIME = ") + (time ? std::to_string(time) : "?") + " S");
+		texts[3].setString(std::string("STEPS = " + (move.size() ? std::to_string(move.size()) : "?")));
+		texts[4].setString("STATES = " + (count ? std::to_string(count) : "?"));
+	}
+
+	float 	get_x(float padding) { return (WIDTH  - TILE_SIZE*SCALE*size)/2.f + padding - 5; }
+
+	float 	get_y(float padding) { return (HEIGHT - TILE_SIZE*SCALE*size)/3.5f + padding; }
 
 	template<class T>
 	void 	set_positions(std::vector<T>& instance, float k) {
@@ -255,54 +157,22 @@ class Visualizer {
 				padding_x = 0;
 			}
 			instance[i].setPosition(get_x(padding_x) + k,
-									get_y(padding_y));
+									get_y(padding_y) - k / size);
 			padding_x += SCALE*TILE_SIZE + PADDING;
 		}
 	}
-	void	set_sprites(Puzzle *puzzle) {
 
-		sprites.clear();
-		for (int i = 0; i < puzzle->get_size() * puzzle->get_size(); ++i) {
-			sprites.emplace_back(sf::Sprite{texture,
-											sf::IntRect(5 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)});
-			sprites[i].setScale(SCALE, SCALE);
-		}
-		empty_sprite = puzzle->get_space();
-		sprites[empty_sprite.first * puzzle->get_size() + empty_sprite.second].setScale(0, 0);
-		set_positions(sprites, 0);
-	}
+	void 	draw_puzzle(int step, States state) {
 
-	void	set_numbers(Puzzle *puzzle) {
-		std::string 			number;
+		window.draw(icons[state]);
 
-		numbers.clear();
-		for (int i = 0; i < puzzle->get_size() * puzzle->get_size(); ++i) {
-			if (!puzzle->get_sequence()[i]) {
-				number = "";
-			} else {
-				number = std::to_string(puzzle->get_sequence()[i]);
-			}
-			numbers.emplace_back(sf::Text{number, font, TILE_SIZE * 3});
-			numbers[i].setFillColor(sf::Color::Black);
-		}
-		set_positions(numbers, TILE_SIZE*SCALE / 4.5);
-	}
-
-	void 	draw_puzzle(int step) {
 		for (int i = 0; i < sprites.size(); ++i) {
 			window.draw(sprites[i]);
 			window.draw(numbers[i]);
 		}
 
-		float padding_y = get_y(HEIGHT / 2.5) + 40;
-		float padding_x = get_x(0);
-
-		texts[0].setString(bars[0][select[0]]);
-		texts[1].setString(bars[1][select[1]]);
-		texts[3].setString("# " + std::to_string(step));
+		texts[1].setString("  " + (step == 0 && state == GO ? "0" : step == 0 ? "" : std::to_string(step)));
 		for (int i = 0; i < texts.size(); ++i) {
-			texts[i].setPosition(padding_x, padding_y);
-			padding_y += 30 + (i == 2) * 20 + (i == 3) * 20;
 			window.draw(texts[i]);
 		}
 	}
@@ -310,44 +180,45 @@ class Visualizer {
 	void move(Move dir, int& step) {
 		int dx = 0;
 		int dy = 0;
-		float speed = TILE_SIZE;
+		float speed = 7;
 
 		if (dir == Move::UP) { dx = 0; dy = -1;};
 		if (dir == Move::DOWN) { dx = 0; dy = 1;};
 		if (dir == Move::RIGHT) { dx = 1; dy = 0; };
 		if (dir == Move::LEFT) { dx = -1; dy = 0; };
 
-		sf::Vector2f pos_1 = sprites[empty_sprite.first * size + empty_sprite.second].getPosition();
-		sf::Vector2f pos_2 = numbers[empty_sprite.first * size + empty_sprite.second].getPosition();
-		sf::Vector2f pos_3 = sprites[(empty_sprite.first + dy) * size + empty_sprite.second + dx].getPosition();
-		sf::Vector2f pos_4 = numbers[(empty_sprite.first + dy) * size + empty_sprite.second + dx].getPosition();
+		sf::Vector2f pos_1 = sprites[space_x * size + space_y].getPosition();
+		sf::Vector2f pos_2 = numbers[space_x * size + space_y].getPosition();
+		sf::Vector2f pos_3 = sprites[(space_x + dy) * size + space_y + dx].getPosition();
+		sf::Vector2f pos_4 = numbers[(space_x + dy) * size + space_y + dx].getPosition();
 
-		sprites[empty_sprite.first * size + empty_sprite.second].setPosition(pos_3);
-		numbers[empty_sprite.first * size + empty_sprite.second].setPosition(pos_4);
+		sprites[space_x * size + space_y].setPosition(pos_3);
+		numbers[space_x * size + space_y].setPosition(pos_4);
 
 		--step;
 		for (float i = 0; i < TILE_SIZE*SCALE;) {
-			sprites[(empty_sprite.first + dy) * size + empty_sprite.second + dx].move(-1 * dx * speed, -1 * dy * speed);
-			numbers[(empty_sprite.first + dy) * size + empty_sprite.second + dx].move(-1 * dx * speed, -1 * dy * speed);
+			sprites[(space_x + dy) * size + space_y + dx].move(-1 * dx * speed, -1 * dy * speed);
+			numbers[(space_x + dy) * size + space_y + dx].move(-1 * dx * speed, -1 * dy * speed);
 
-			window.clear(sf::Color::Black);
-			draw_puzzle(step);
+			window.clear(sf::Color{0,25,45});
+			draw_puzzle(step, GO);
 			window.display();
 			i += speed;
 		}
 
-		sprites[(empty_sprite.first + dy) * size + empty_sprite.second + dx].setPosition(pos_1);
-		numbers[(empty_sprite.first + dy) * size + empty_sprite.second + dx].setPosition(pos_2);
+		sprites[(space_x + dy) * size + space_y + dx].setPosition(pos_1);
+		numbers[(space_x + dy) * size + space_y + dx].setPosition(pos_2);
 
-		std::swap(sprites[(empty_sprite.first + dy) * size + empty_sprite.second + dx], sprites[empty_sprite.first * size + empty_sprite.second]);
-		std::swap(numbers[(empty_sprite.first + dy) * size + empty_sprite.second + dx], numbers[empty_sprite.first * size + empty_sprite.second]);
+		std::swap(sprites[(space_x + dy) * size + space_y + dx], sprites[space_x * size + space_y]);
+		std::swap(numbers[(space_x + dy) * size + space_y + dx], numbers[space_x * size + space_y]);
 
-		empty_sprite.first += dy;
-		empty_sprite.second += dx;
+		space_x += dy;
+		space_y += dx;
 
-		window.clear(sf::Color::Black);
-		draw_puzzle(step);
-		window.display();
+		for (int i = 0; i < 3; ++i) {
+			window.clear(sf::Color{0, 25, 45});
+			draw_puzzle(step, GO);
+			window.display();
+		}
 	}
-
 };
