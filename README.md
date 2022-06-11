@@ -1,5 +1,5 @@
 #  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте) N-Puzzle  
-<div><img src="srcs/resources/visualizer.gif" width="200" align="right"></div>  
+<div><img src="srcs/resources/visualizer.gif" width="250" align="right"></div>  
 
  Implementation of A* search algorithm to solve N-puzzle for learning about graph-based search algorithms
  ([_пятнашки_](https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0_%D0%B2_15),

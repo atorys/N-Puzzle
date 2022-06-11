@@ -27,7 +27,6 @@ class Graphics {
 
 	std::vector<sf::Color>		colors;
 	std::vector<std::string>	bars;
-	int							bar;
 
   public:
 	Graphics(Puzzle const& puzzle,
@@ -36,42 +35,33 @@ class Graphics {
 									window(sf::VideoMode({WIDTH, HEIGHT}), "N-Puzzle"),
 									size(puzzle.get_size()),
 									solvable(is_solvable),
-									bar(0),
 									bars({"    EUCLIDEAN >", " < CHEBYSHEV >", " < MANHATTAN   "}),
 									colors({{203, 255, 77}, {147,112,219}, {255,215,0}}) {
 
 		window.setFramerateLimit(60);
 		window.setMouseCursorVisible(false);
 
-		if (solvable) {
-			for (int i = 0; i < 5; ++i) {
-				texts.emplace_back("", Assets::getInstance()->get_font(), 45 + 10 * (i < 1) + 15 * (i == 1));
-				texts[i].setFillColor(sf::Color::White);
-			}
-			texts[0].setString(bars[bar]);
-			texts[0].setFillColor(colors[bar]);
-		} else {
-			texts.emplace_back("NOT SOLVABLE ;(", Assets::getInstance()->get_font(), 50);
-			texts[0].setFillColor(sf::Color::Red);
-		}
-
 		int percentage;
 		while ((percentage = size * (SCALE * TILE_SIZE) / (WIDTH / 100)) <= 60 || percentage >= 70) {
 			SCALE *= percentage < 60 ? 1.25 : 0.75;
 		}
 
-		set_puzzle(puzzle, SearchAlgorithm::Solution{0,0,0});
-		icons.emplace_back(Assets::getInstance()->get_icons(), sf::IntRect(1 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-		icons.emplace_back(Assets::getInstance()->get_icons(), sf::IntRect(0, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-
-		for (auto &icon : icons) {
-			icon.setScale(1.8, 1.8);
-			icon.setPosition(get_x(0), get_y(HEIGHT / 2.5) + 75);
+		if (solvable) {
+			for (int i = 0; i < 5; ++i) {
+				texts.emplace_back("", Assets::getInstance()->get_font(), 45 + 10 * (i < 1) + 15 * (i == 1));
+				texts[i].setFillColor(sf::Color::White);
+			}
+			texts[0].setString(bars[0]);
+			texts[0].setFillColor(colors[0]);
+		} else {
+			texts.emplace_back("NOT SOLVABLE ;(", Assets::getInstance()->get_font(), 50);
+			texts[0].setFillColor(sf::Color::Red);
 		}
+		set_puzzle(puzzle, SearchAlgorithm::Solution{0,0,0});
 	}
 
-	sf::RenderWindow&	get_window() { return window; }
-	std::string const&	get_selected_bar() { return bars[bar]; }
+	sf::RenderWindow&	get_window()				{ return window; }
+	std::string const&	get_bar(int selected_bar)	{ return bars[selected_bar]; }
 
 	void	display(States state, int& steps, SearchAlgorithm::Solution const& solution) {
 		if (state == GO && solvable) {
@@ -87,13 +77,13 @@ class Graphics {
 		window.clear(sf::Color{0,25,45});
 	};
 
-	int		select() {
-		++bar;
-		if (bar == bars.size())
-			bar = 0;
-		texts[0].setString(bars[bar]);
-		texts[0].setFillColor(colors[bar]);
-		return bar;
+	void	select(int* bar) {
+		++(*bar);
+		if (*bar == bars.size()) {
+			*bar = 0;
+		}
+		texts[0].setString(bars[*bar]);
+		texts[0].setFillColor(colors[*bar]);
 	}
 
 	void	set_puzzle(Puzzle const& puzzle, SearchAlgorithm::Solution const& solution) {
@@ -119,6 +109,16 @@ class Graphics {
 		}
 		if (solvable)
 			reset_puzzle(puzzle, solution);
+
+		icons.emplace_back(Assets::getInstance()->get_icons(),
+						   sf::IntRect(1 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+		icons.emplace_back(Assets::getInstance()->get_icons(),
+						   sf::IntRect(0, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+		for (auto &icon : icons) {
+			icon.setScale(1.8, 1.8);
+			icon.setPosition(get_x(0), get_y(HEIGHT / 2.5) + 75);
+		}
 	}
 
 	void	reset_puzzle(Puzzle const& puzzle, SearchAlgorithm::Solution const& solution) {
@@ -136,7 +136,6 @@ class Graphics {
 		numbers[space_x * size + space_y].setCharacterSize(0);
 
 		auto[time, count, move] = solution;
-		texts[1].setString("  ?");
 		texts[2].setString(std::string("TIME = ") + (time ? std::to_string(time) : "?") + " S");
 		texts[3].setString(std::string("STEPS = " + (move.size() ? std::to_string(move.size()) : "?")));
 		texts[4].setString("STATES = " + (count ? std::to_string(count) : "?"));
@@ -215,7 +214,7 @@ class Graphics {
 		space_x += dy;
 		space_y += dx;
 
-		for (int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 5; ++i) {
 			window.clear(sf::Color{0, 25, 45});
 			draw_puzzle(step, GO);
 			window.display();

@@ -53,7 +53,7 @@ class   AStar : public SearchAlgorithm {
     }
 
     float       priority(Puzzle const& puzzle, std::map<int, int> const &goal_state) {
-        return (float)puzzle.get_cost() / 8 + heuristics(puzzle, goal_state);
+        return (float)puzzle.get_cost() / 4 + heuristics(puzzle, goal_state);
     }
 
     Solution    solve(Puzzle const& puzzle) override {

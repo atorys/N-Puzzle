@@ -39,7 +39,7 @@ class Visualizer {
 	void display() {
 		sf::Event	event;
 		States		state = PAUSE;
-		int 		steps = 0, bar = 0;
+		int 		steps = 0, selected_bar = 0;
 
 		while (graphics.get_window().isOpen()) {
 			while (graphics.get_window().pollEvent(event)) {
@@ -49,10 +49,10 @@ class Visualizer {
 
 				} else if (event.type == sf::Event::KeyPressed && solvable) {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && state == PAUSE) {
-						bar = graphics.select();
+						graphics.select(&selected_bar);
 
 					} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-						update(&state, &steps, bar);
+						update(&state, &steps, selected_bar);
 					}
 				}
 			}
@@ -64,7 +64,7 @@ class Visualizer {
 	void	update(States *state, int *steps, int bar) {
 
 		std::string prev_solution = current_solution;
-		current_solution = graphics.get_selected_bar();
+		current_solution = graphics.get_bar(bar);
 
 		if (*state == PAUSE
 			&& !solutions.count(current_solution)) {
@@ -74,7 +74,7 @@ class Visualizer {
 			*steps = std::get<2>(solutions[current_solution]).size();
 			graphics.reset_puzzle(puzzle, solutions[current_solution]);
 
-		} else if (!steps || prev_solution != current_solution) {
+		} else if (!(*steps) || prev_solution != current_solution) {
 			*steps = std::get<2>(solutions[current_solution]).size();
 			graphics.reset_puzzle(puzzle, solutions[current_solution]);
 
