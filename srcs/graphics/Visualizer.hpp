@@ -18,36 +18,33 @@ class Visualizer {
 	Graphics													graphics;
 
 	Puzzle														puzzle;
-	bool 														solvable;
 	std::vector<AStar::HeuristicsFunc>							heuristics;
-	std::unordered_map<std::string, SearchAlgorithm::Solution>	solutions;
+	std::map<std::string, SearchAlgorithm::Solution>			solutions;
 
 	std::string													current_solution;
 
   public:
-	Visualizer(Puzzle const& p,
-			   bool is_solvable):	algorithm(new AStar()),
-									puzzle(p),
-									solvable(is_solvable),
-									graphics(p, is_solvable),
-									heuristics({&euclideanDistance, &chebDistance, &chebDistance}) {}
+	Visualizer():	algorithm(new AStar()),
+					graphics(),
+					heuristics({&euclideanDistance, &chebDistance, &chebDistance}) {}
 
 	~Visualizer() {
 		delete algorithm;
 	}
 
-	void display() {
+	void	display(Puzzle const& p) {
 		sf::Event	event;
 		States		state = PAUSE;
 		int 		steps = 0, selected_bar = 0;
 
+		set_puzzle(p);
 		while (graphics.get_window().isOpen()) {
 			while (graphics.get_window().pollEvent(event)) {
 				if (event.type == sf::Event::Closed
 					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 					graphics.get_window().close();
 
-				} else if (event.type == sf::Event::KeyPressed && solvable) {
+				} else if (event.type == sf::Event::KeyPressed && puzzle.is_solvable()) {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && state == PAUSE) {
 						graphics.select(&selected_bar);
 
@@ -61,7 +58,13 @@ class Visualizer {
 	}
 
   private:
-	void	update(States *state, int *steps, int bar) {
+
+	void	set_puzzle(Puzzle const& p) {
+		this->puzzle = p;
+		graphics.set_puzzle(puzzle);
+	}
+
+	void	update(States *state, int *steps, int& bar) {
 
 		std::string prev_solution = current_solution;
 		current_solution = graphics.get_bar(bar);
@@ -72,11 +75,11 @@ class Visualizer {
 			((AStar *) algorithm)->select_heuristics(heuristics[bar]);
 			solutions[current_solution] = algorithm->solve(puzzle);
 			*steps = std::get<2>(solutions[current_solution]).size();
-			graphics.reset_puzzle(puzzle, solutions[current_solution]);
+			graphics.reset(solutions[current_solution]);
 
 		} else if (!(*steps) || prev_solution != current_solution) {
 			*steps = std::get<2>(solutions[current_solution]).size();
-			graphics.reset_puzzle(puzzle, solutions[current_solution]);
+			graphics.reset(solutions[current_solution]);
 
 		}
 		*state = (*state == PAUSE) ? GO : PAUSE;

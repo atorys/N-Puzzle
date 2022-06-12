@@ -19,10 +19,10 @@ float	euclideanDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
 
     for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
 
-		node_x = i / puzzle.get_size();
-		node_y = i % puzzle.get_size();
-		goal_x = goal.at(puzzle.get_sequence()[i]) / puzzle.get_size();
-		goal_y = goal.at(puzzle.get_sequence()[i]) % puzzle.get_size();
+		node_x = i / puzzle.size();
+		node_y = i % puzzle.size();
+		goal_x = goal.at(puzzle.get_sequence()[i]) / puzzle.size();
+		goal_y = goal.at(puzzle.get_sequence()[i]) % puzzle.size();
 
 		distance += (float)sqrt(((node_x - goal_x) * (node_x - goal_x)) + ((node_y - goal_y) * (node_y - goal_y)));
     }
@@ -36,10 +36,10 @@ float	chebDistance(Puzzle const& puzzle, const std::map<int, int>& goal) {
 
     for (int i = 0; i < puzzle.get_sequence().size(); ++i) {
 
-		node_x = i / puzzle.get_size();
-		node_y = i % puzzle.get_size();
-		goal_x = goal.at(puzzle.get_sequence()[i]) / puzzle.get_size();
-		goal_y = goal.at(puzzle.get_sequence()[i]) % puzzle.get_size();
+		node_x = i / puzzle.size();
+		node_y = i % puzzle.size();
+		goal_x = goal.at(puzzle.get_sequence()[i]) / puzzle.size();
+		goal_y = goal.at(puzzle.get_sequence()[i]) % puzzle.size();
 
 		distance += std::max(std::abs(node_x - goal_x),
 							 std::abs(node_y - goal_y));

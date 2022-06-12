@@ -12,7 +12,6 @@ set(SOURCE_FILES
         srcs/algorithm/SearchAlgorithm.hpp
         srcs/algorithm/Heuristics.hpp
         srcs/utility/utility.hpp
-        srcs/utility/print.cpp
         srcs/utility/solve.cpp
         srcs/utility/parse.cpp)
 
@@ -24,7 +23,6 @@ set(SOURCE_FILES_GAME
         srcs/algorithm/SearchAlgorithm.hpp
         srcs/algorithm/Heuristics.hpp
         srcs/utility/utility.hpp
-        srcs/utility/print.cpp
         srcs/utility/solve.cpp
         srcs/utility/parse.cpp)
 

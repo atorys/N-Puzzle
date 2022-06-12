@@ -8,7 +8,8 @@
 
 int main(int ac, char **av) {
 
-	Puzzle* puzzle;
+	Puzzle 		puzzle;
+	Visualizer  n_puzzle;
 
 	std::pair<int, std::vector<int>> args;
 	if ((args = getPuzzle(av[1])).second.empty()) {
@@ -16,7 +17,8 @@ int main(int ac, char **av) {
 		exit(EXIT_FAILURE);
 	}
 
-	puzzle = new Puzzle(args.first, args.second);
-	Visualizer  n_puzzle(*puzzle, is_solvable(*puzzle, Puzzle(puzzle->get_size(), snailSolution(puzzle->get_size()))));
-	n_puzzle.display();
+	puzzle = Puzzle(args.first, args.second);
+	puzzle.set_solvable(is_solvable(puzzle,
+									 Puzzle(puzzle.size(), snailSolution(puzzle.size()))));
+	n_puzzle.display(puzzle);
 }

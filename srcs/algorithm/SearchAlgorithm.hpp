@@ -59,7 +59,7 @@ class   AStar : public SearchAlgorithm {
     Solution    solve(Puzzle const& puzzle) override {
 
         Puzzle              current, next;
-        std::vector<int>    goal = snailSolution(puzzle.get_size());
+        std::vector<int>    goal = snailSolution(puzzle.size());
         std::map<int, int>  goal_state = get_goal_map(goal);
         bool                success = false;
 
@@ -104,7 +104,7 @@ class   DepthFirstSearch : public SearchAlgorithm {
     Solution solve(Puzzle const& puzzle) override {
 
         Puzzle              current, next;
-        std::vector<int>    goal = snailSolution(puzzle.get_size());
+        std::vector<int>    goal = snailSolution(puzzle.size());
 		unsigned long		start = clock();
 
         stack.push(puzzle);
