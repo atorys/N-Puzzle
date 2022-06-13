@@ -4,7 +4,7 @@
 
 #include "Puzzle.hpp"
 
-Puzzle::Puzzle(): m_size(0) {}
+Puzzle::Puzzle(): m_size(0), sequence(0) {}
 
 Puzzle::Puzzle(int count, std::vector<int> const& sequence):	m_size(count),
 																sequence(sequence) {

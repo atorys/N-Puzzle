@@ -19,7 +19,7 @@ class Graphics {
 	std::vector<sf::Text>	numbers;
 	std::vector<sf::Text>	texts;
 
-	Puzzle					puzzle;
+	Puzzle*					puzzle;
 	int						Ox;
 	int						Oy;
 	int 					size;
@@ -41,8 +41,8 @@ class Graphics {
 	float 					get_x(float padding) const			{ return (WIDTH  - TILE_SIZE*SCALE*size)/2.f + padding - 5; }
 	float 					get_y(float padding) const			{ return (HEIGHT - TILE_SIZE*SCALE*size)/3.5f + padding; }
 
-	void	set_puzzle(Puzzle const& p) {
-		this->size = p.size();
+	void	set_puzzle(Puzzle *p) {
+		this->size = p->size();
 		this->puzzle = p;
 
 		int percentage;
@@ -51,7 +51,7 @@ class Graphics {
 			SCALE *= (percentage < 60) ? 1.25 : 0.75;
 		}
 
-		if (puzzle.is_solvable()) {
+		if (puzzle->is_solvable()) {
 			for (int i = 0; i < 5; ++i) {
 				texts.emplace_back("", Assets::getInstance()->get_font(), 45 + 10 * (i < 1) + 15 * (i == 1));
 				texts[i].setFillColor(sf::Color::White);
@@ -67,7 +67,7 @@ class Graphics {
 	}
 
 	void	display(States& state, int& steps, SearchAlgorithm::Solution const& solution) {
-		if (state == GO && puzzle.is_solvable()) {
+		if (state == GO && puzzle->is_solvable()) {
 			if (steps > 0) {
 				move(std::get<2>(solution)[std::get<2>(solution).size() - steps], steps);
 			} else {
@@ -103,7 +103,7 @@ class Graphics {
 		for (int i = 0; i < size * size; ++i) {
 			sprites.emplace_back(sf::Sprite{Assets::getInstance()->get_texture(),
 											sf::IntRect(5 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)});
-			numbers.emplace_back(sf::Text{std::to_string(puzzle.get_sequence()[i]),
+			numbers.emplace_back(sf::Text{std::to_string(puzzle->get_sequence()[i]),
 										  Assets::getInstance()->get_font(), TILE_SIZE * 3});
 			numbers[i].setFillColor(sf::Color::Black);
 		}
@@ -119,19 +119,19 @@ class Graphics {
 			texts[i].setPosition(padding_x, padding_y);
 			padding_y += 30 + (i == 1) * 30;
 		}
-		if (puzzle.is_solvable()) {
+		if (puzzle->is_solvable()) {
 			reset(solution);
 		}
 	}
 
 	void	reset(SearchAlgorithm::Solution const& solution) {
 
-		Ox = puzzle.get_space().first;
-		Oy = puzzle.get_space().second;
+		Ox = puzzle->get_space().first;
+		Oy = puzzle->get_space().second;
 
 		for (int i = 0; i < size * size; ++i) {
 			sprites[i].setScale(SCALE, SCALE);
-			numbers[i].setString(std::to_string(puzzle.get_sequence()[i]));
+			numbers[i].setString(std::to_string(puzzle->get_sequence()[i]));
 			numbers[i].setCharacterSize(TILE_SIZE * 3);
 		}
 
@@ -162,7 +162,7 @@ class Graphics {
 
 	void 	draw_puzzle(int step, States state) {
 
-		window.clear(sf::Color{0, 25, 51});
+		window.clear(sf::Color{0, 25, 60});
 		window.draw(icons[state]);
 
 		for (int i = 0; i < sprites.size(); ++i) {

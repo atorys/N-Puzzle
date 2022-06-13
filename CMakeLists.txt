@@ -4,19 +4,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 # Add main.cpp file of project root directory as source file
 set(SOURCE_FILES
-#        srcs/app/main.cpp
-        srcs/graphics/main.cpp
-        srcs/graphics/Visualizer.hpp
-        srcs/models/Puzzle.cpp
-        srcs/models/Puzzle.hpp
-        srcs/algorithm/SearchAlgorithm.hpp
-        srcs/algorithm/Heuristics.hpp
-        srcs/utility/utility.hpp
-        srcs/utility/solve.cpp
-        srcs/utility/parse.cpp)
-
-set(SOURCE_FILES_GAME
-        srcs/graphics/main.cpp
+        srcs/app/main.cpp
         srcs/graphics/Visualizer.hpp
         srcs/models/Puzzle.cpp
         srcs/models/Puzzle.hpp

@@ -1,7 +1,7 @@
 #  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте) N-Puzzle  
 <div><img src="srcs/resources/visualizer.gif" width="300" align="right"></div>  
 
- Implementation of A* search algorithm to solve N-puzzle for learning about graph-based search algorithms
+ Implementation of A* search algorithm to solve N-puzzles
  ([_пятнашки_](https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0_%D0%B2_15),
  [_15-Puzzle_](https://en.wikipedia.org/w/index.php?title=15_puzzle&oldid=1086625326), taquin) 
 
@@ -9,7 +9,8 @@
 <!--  <img align="center" src="srcs/resources/visualizer.gif" width="350" alt="algorithm"/> -->
  
 ## О Проекте
-Алгоритм А* - информированный алгоритм поиска, который находит маршрут наименьшей стоимости между начальной и конечной вершинами во взвешенном графе, для n-puzzle единица графа - состояние ячеек пазла
+Алгоритм А* - информированный алгоритм поиска, который находит маршрут наименьшей стоимости между начальной и конечной вершинами во взвешенном графе
+
 
 <details>
 <summary> Основные правила </summary>

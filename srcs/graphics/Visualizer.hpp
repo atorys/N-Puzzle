@@ -17,7 +17,7 @@ class Visualizer {
 	SearchAlgorithm												*algorithm;
 	Graphics													graphics;
 
-	Puzzle														puzzle;
+	Puzzle*														puzzle;
 	std::vector<AStar::HeuristicsFunc>							heuristics;
 	std::map<std::string, SearchAlgorithm::Solution>			solutions;
 
@@ -26,13 +26,14 @@ class Visualizer {
   public:
 	Visualizer():	algorithm(new AStar()),
 					graphics(),
+					puzzle(nullptr),
 					heuristics({&euclideanDistance, &chebDistance, &chebDistance}) {}
 
 	~Visualizer() {
 		delete algorithm;
 	}
 
-	void	display(Puzzle const& p) {
+	void	display(Puzzle *p) {
 		sf::Event	event;
 		States		state = PAUSE;
 		int 		steps = 0, selected_bar = 0;
@@ -44,7 +45,7 @@ class Visualizer {
 					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 					graphics.get_window().close();
 
-				} else if (event.type == sf::Event::KeyPressed && puzzle.is_solvable()) {
+				} else if (event.type == sf::Event::KeyPressed && puzzle->is_solvable()) {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && state == PAUSE) {
 						graphics.select(&selected_bar);
 
@@ -59,7 +60,7 @@ class Visualizer {
 
   private:
 
-	void	set_puzzle(Puzzle const& p) {
+	void	set_puzzle(Puzzle *p) {
 		this->puzzle = p;
 		graphics.set_puzzle(puzzle);
 	}
@@ -73,7 +74,7 @@ class Visualizer {
 			&& !solutions.count(current_solution)) {
 
 			((AStar *) algorithm)->select_heuristics(heuristics[bar]);
-			solutions[current_solution] = algorithm->solve(puzzle);
+			solutions[current_solution] = algorithm->solve(*puzzle);
 			*steps = std::get<2>(solutions[current_solution]).size();
 			graphics.reset(solutions[current_solution]);
 
