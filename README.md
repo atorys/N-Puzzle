@@ -1,4 +1,4 @@
-#  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте) N-Puzzle  
+# <!--  [<img src="https://img.shields.io/badge/en%20-6fa8dc?style=for-the-badge">](#about) [<img src="https://img.shields.io/badge/ru%20-lightgrey?style=for-the-badge">](#о-проекте)  --> N-Puzzle  
 <div><img src="srcs/resources/visualizer.gif" width="300" align="right"></div>  
 
  Implementation of A* search algorithm to solve N-puzzles
@@ -9,7 +9,7 @@
 <!--  <img align="center" src="srcs/resources/visualizer.gif" width="350" alt="algorithm"/> -->
  
 ## О Проекте
-Алгоритм А* - информированный алгоритм поиска, который находит маршрут наименьшей стоимости между начальной и конечной вершинами во взвешенном графе
+Алгоритм А* - информированный алгоритм поиска, который находит маршрут наименьшей стоимости между начальной и конечной вершинами во взвешенном графе, в нашем случае алгоритм находит наилучший набор движений пустого блока, который приводит головоломку в конечный вид.
 
 
 <details>
@@ -18,13 +18,20 @@
 - головоломка состоит из квадратного поля N*N элементов;
 - каждая ячейка содержит уникальное число от 1 до N^2 - 1 в рандомном порядке,
   одна из ячеек остается пустой;  <div> <img src="https://user-images.githubusercontent.com/83991209/171353109-3b08e489-011d-4119-881f-98715337fa70.png" width="200" align="right"></div> 
-- реализуемый алгоритм находит кратчайшую последовательность движений пустого блока,
-  которая преобразует поле головоломки в конечный вид "snail solution";
 - за один ход можно менять местами пустой блок с соседними ячейками;  
+- необходимо преобразовать поле в конечный вид "snail solution";
 </details>
 
-## Задачи :
- 
+
+
+### Задачи :
+- [x] A*
+- [x] heuristics
+- [ ] dfs
+- [ ] bfs
+- [ ] greedy search
+
+<!--
 1. <details> 
     <summary> Проверить, что головоломка имеет решение.    
     </summary>  
@@ -53,65 +60,10 @@
    </details>
    
 4. <details> <summary>  </summary>
-   </details>
+   </details> -->
 
-## About
-<details>
-<summary> General rules </summary>
-
-- game starts with a square board made up of N*N cells;  
-- every cell contains unique number from 1 to N^2 - 1 in random order
-  and one cell is empty;  
-- algorithm has to find a valid sequence of moves to reach the final state, a.k.a the "snail solution";
-- only tiles adjacent to the empty space may be moved into that space.
-```
-    3-PUZZLE :  
-   ───────────                                                     'SNAIL SOLUTION'
-                                                                        ⤴   
-            ┌───┬───┬───┐                                 ┌───┬───┬───┐
-            │ 3 │ 5 │   │                                 │ 1 │ 2 │ 3 │
-            ╞───╪───╪───╡                                 ╞───╪───╪───╡
-            │ 6 │ 7 │ 2 │ ──≻ some sequence of moves ──≻  │ 8 │   │ 4 │
-            ╞───╪───╪───╡               ...               ╞───╪───╪───╡
-            │ 4 │ 1 │ 8 │                                 │ 7 │ 6 │ 5 │
-            └───┴───┴───┘                                 └───┴───┴───┘
-                         ⤵                                            ⤵
-                        INITIAL STATE                                 GOAL STATE
-```
-</details>
-
-
-
-
-## Program algorithm :
-<details>
-<summary> 1. Check that puzzle is solvable </summary>
-
- > Inversion - a pair of tiles **(a,b)** form an inversion if **a** appears before **b** but **a > b**
- 
-Solvable cases:
-- N is **odd** and **both** numbers of inversions in the initial and 
- goal states are either even or odd
-  ```
-    ┌───┬───┬───┐     N = 3 is odd
-    │ 3 │ 5 │   │     initial state as sequence   (3, 5, 6, 7, 2, 4, 1, 8)
-    ╞───╪───╪───╡     number of inversions = 13   (3,2) (3,1) (5,2) (5,4) ... (2,1) (4,1)
-    │ 6 │ 7 │ 2 │                                  
-    ╞───╪───╪───╡     goal state as sequence      (1, 2, 3, 8, 4, 7, 6, 5)                       
-    │ 4 │ 1 │ 8 │     number of inversions = 7    (8,4) (8,7) (8,6) (8,5) (7,6) (7,5) (6,5)
-    └───┴───┴───┘
-                      numbers of inversions are even
-    ```
-- N is **even**, then the sum of inversions number with the row of empty cell must have different partities than 
- the sum of inversions number of goal state with the row of empty cell in final table
-- in other cases puzzle is not solvable
-
-
-https://dreamgryphon.itch.io/pixel-art-templates
-https://paweljarosz.itch.io/puzzle-platformer-asset-mnimalistic-game-kit-portal-like
-https://cazwolf.itch.io/caz-pixel-keyboard
-https://just-a-cookie.itch.io/pixel-icon-pack
-
-https://arcade.itch.io/awkward
-
-http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#a-starx27s-use-of-the-heuristic
+## Материалы 
+- [game asset](https://paweljarosz.itch.io/puzzle-platformer-asset-mnimalistic-game-kit-portal-like)
+- [start/pause icon](https://just-a-cookie.itch.io/pixel-icon-pack)
+- [font](https://arcade.itch.io/awkward)
+- [Use of heuristics](http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#a-starx27s-use-of-the-heuristic)
