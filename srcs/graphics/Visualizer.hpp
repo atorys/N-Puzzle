@@ -27,7 +27,7 @@ class Visualizer {
 	Visualizer():	algorithm(new AStar()),
 					graphics(),
 					puzzle(nullptr),
-					heuristics({&euclideanDistance, &chebDistance, &chebDistance}) {}
+					heuristics({&euclideanDistance, &chebDistance, &manhattanDistance}) {}
 
 	~Visualizer() {
 		delete algorithm;
