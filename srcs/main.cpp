@@ -19,8 +19,7 @@ int main(int ac, char **av) {
 		}
 
 		puzzle = Puzzle(args.first, args.second);
-		puzzle.set_solvable(is_solvable(puzzle,
-										Puzzle(puzzle.size(), snailSolution(puzzle.size()))));
+		puzzle.set_solvable(is_solvable(puzzle));
 		n_puzzle.display(&puzzle);
 	}
 }

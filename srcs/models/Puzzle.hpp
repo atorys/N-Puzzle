@@ -41,10 +41,11 @@ class Puzzle {
 	bool						try_move(Move);
 };
 
-inline bool is_solvable(Puzzle const& puzzle, Puzzle const& solution) {
+inline bool is_solvable(Puzzle const& puzzle) {
 
-	int i_puzzle = count_inversions(puzzle.get_sequence());
-	int i_goal = count_inversions(solution.get_sequence());
+    Puzzle  solution(puzzle.size(), snailSolution(puzzle.size()));
+	int     i_puzzle = count_inversions(puzzle.get_sequence());
+	int     i_goal = count_inversions(solution.get_sequence());
 
 	if (puzzle.size() % 2) {
 		return i_goal % 2 == i_puzzle % 2;
