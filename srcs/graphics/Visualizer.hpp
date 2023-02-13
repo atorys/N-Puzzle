@@ -8,8 +8,8 @@
 #include "SFML/System.hpp"
 #include "SFML/Window.hpp"
 
-#include "SearchAlgorithm.hpp"
-#include "Heuristics.hpp"
+#include "../algorithm/SearchAlgorithm.hpp"
+#include "../algorithm/Heuristics.hpp"
 #include "Graphics.hpp"
 
 class Visualizer {

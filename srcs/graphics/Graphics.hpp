@@ -9,6 +9,7 @@
 #include "SFML/Window.hpp"
 
 #include "Assets.hpp"
+#include "../algorithm/SearchAlgorithm.hpp"
 
 class Graphics {
 

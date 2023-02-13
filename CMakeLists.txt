@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.24.2)
 project(n-puzzle)
 set(CMAKE_CXX_STANDARD 14)
 

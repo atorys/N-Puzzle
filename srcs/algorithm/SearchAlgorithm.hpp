@@ -1,5 +1,5 @@
 //
-// Created by atory on 01.06.22.
+// Created by atory & csherill on 01.06.22.
 //
 
 #pragma once
@@ -7,6 +7,7 @@
 #include "../utility/utility.hpp"
 #include <queue>
 #include <set>
+#include <utility>
 
 /**
  * Abstract class Search Algorithm
@@ -65,7 +66,7 @@ class   AStar : public SearchAlgorithm {
 
 		unsigned long 		start = clock();
 
-        queue.push(std::pair {priority(puzzle, goal_state), puzzle});
+        queue.push(std::pair{priority(puzzle, goal_state), puzzle});
         while (!queue.empty() && !success) {
             current = queue.top().second;
             queue.pop();

@@ -3,7 +3,7 @@
 //
 
 
-#include "Visualizer.hpp"
+#include "./graphics/Visualizer.hpp"
 
 int main(int ac, char **av) {
 

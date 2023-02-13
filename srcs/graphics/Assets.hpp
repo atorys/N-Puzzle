@@ -15,9 +15,9 @@ const int HEIGHT = 750;
 const int TILE_SIZE = 16;
 const int PADDING = 7;
 float SCALE = 4;
-const char* FONT = "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
-const char* BOXES =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
-const char* ICONS =  "/Users/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/icons.png";
+const char* FONT = "/home/io/Documents/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
+const char* BOXES =  "/home/io/Documents/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
+const char* ICONS =  "/home/io/Documents/N-Puzzle/srcs/resources/graphics/icons.png";
 //const char* FONT = "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/Awkward/AwkwardExt.ttf";
 //const char* BOXES =  "/home/atory/CLionProjects/N-Puzzle/srcs/resources/graphics/puzzle_tileset.png";
 
