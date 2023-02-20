@@ -1,4 +1,4 @@
-NAME = n_puzle
+NAME = n_puzzle
 
 CC = clang++ -std=c++17
 
